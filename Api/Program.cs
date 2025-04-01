@@ -78,8 +78,13 @@ app.MapSwagger();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSwagger(c =>
+{
+    c.RouteTemplate = "api/swagger/{documentName}/swagger.json";
+});
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = "api/swagger";
 });
 app.Run();
