@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - backend
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  api:
+    build:
+      context: ./
+      dockerfile: ./Api/Dockerfile
+    networks:
+      - backend
+    ports:
+      - "8000:8000"
+    restart: always
+
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+    driver: bridge
