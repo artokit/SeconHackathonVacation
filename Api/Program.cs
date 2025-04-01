@@ -7,14 +7,13 @@ using Services.Common.Settings;
 using Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddMigrations(builder.Configuration);
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
-builder.Services.AddRepositories();
-builder.Services.AddTransient<ExceptionHandlingMiddleware>();
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -24,6 +23,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
 var authOptions = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -40,6 +40,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
         };
     });
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
@@ -48,9 +50,9 @@ builder.Services.AddSwaggerGen(opt =>
         In = ParameterLocation.Header,
         Description = "Please enter token",
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,
+        Type = SecuritySchemeType.ApiKey,
         BearerFormat = "JWT",
-        Scheme = "bearer"
+        Scheme = "Bearer"
     });
     opt.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
@@ -59,32 +61,33 @@ builder.Services.AddSwaggerGen(opt =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
 
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 var app = builder.Build();
+
 app.UseCors("AllowAll");
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.Services.UseMigrations();
-app.MapControllers();
-app.MapSwagger();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSwagger(c =>
-{
-    c.RouteTemplate = "api/swagger/{documentName}/swagger.json";
-});
+
+app.MapControllers();
+
+app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "My API V1");
-    c.RoutePrefix = "api/swagger";
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = "swagger"; // Доступ через /swagger
 });
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.Run();
