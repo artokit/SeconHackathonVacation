@@ -1,14 +1,19 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Common;
 using Contracts.Users.Requests;
 using Contracts.Users.Responses;
 using DataAccess.Common.Interfaces.Repositories;
 using DataAccess.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Services.Common.Settings;
+using Services.Exceptions.Users;
 using Services.Interfaces;
 using Services.Mappers;
+using ClaimTypes = System.Security.Claims.ClaimTypes;
+using CustomClaimTypes = Common.ClaimTypes;
 
 namespace Services.Users;
 
@@ -25,19 +30,42 @@ public class UserService : IUserService
 
     public async Task<LoginSuccessResponse> RegisterAsync(RegisterRequestDto registerRequestDto)
     {
-        var res = await _usersRepository.CreateAsync(registerRequestDto.MapToDb());
+        if (await _usersRepository.GetUserByEmailAsync(registerRequestDto.Email) != null)
+        {
+            throw new EmailsExistException();
+        }
+        
+        var dbUser = registerRequestDto.MapToDb();
+        dbUser.Role = Roles.Director;
+        
+        var res = await _usersRepository.CreateAsync(dbUser);
         return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };
     }
-    
-    public string GenerateAccessToken(DbUser user)
+
+    public async Task<LoginSuccessResponse> LoginAsync(LoginRequestDto loginRequestDto)
+    {
+        var res = await _usersRepository.GetUserByEmailAsync(loginRequestDto.Email);
+        if (res is null)
+        {
+            throw new FailureAuthorizationException();
+        }
+
+        if (!PasswordService.Verify(loginRequestDto.Password, res.HashedPassword))
+        {
+            throw new FailureAuthorizationException();
+        }
+
+        return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };
+    }
+
+    private string GenerateAccessToken(DbUser user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+        var key = _jwtSettings.GetSymmetricSecurityKey();
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(CustomClaimTypes.Id.ToString(), user.Id.ToString()),
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
@@ -47,18 +75,10 @@ public class UserService : IUserService
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpiryInMinutes),
             signingCredentials: new SigningCredentials(
-                new SymmetricSecurityKey(key),
+                key,
                 SecurityAlgorithms.HmacSha256)
         );
 
         return tokenHandler.WriteToken(token);
     }
-}
-
-public class JwtSettings
-{
-    public string Secret { get; set; }
-    public string Issuer { get; set; }
-    public string Audience { get; set; }
-    public int AccessTokenExpiryInMinutes { get; set; } = 15;
 }

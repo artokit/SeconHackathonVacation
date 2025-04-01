@@ -13,7 +13,7 @@ public static class UserMappers
             Name = requestDto.Name,
             Surname = requestDto.Surname,
             Patronymic = requestDto.Patronymic,
-            HashedPassoword = requestDto.Password.Hash(),
+            HashedPassword = requestDto.Password.Hash(),
             Email = requestDto.Email
         };
     }
