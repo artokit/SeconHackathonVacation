@@ -5,7 +5,7 @@ namespace Api.Controllers;
 [ApiController]
 public class TestController : ControllerBase
 {
-    [HttpGet("test")]
+    [HttpGet("test1")]
     public async Task<IActionResult> Test()
     {
         return Ok("test");
