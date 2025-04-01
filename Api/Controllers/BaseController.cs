@@ -1,9 +1,14 @@
+using Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
-public class BaseController : ControllerBase
+[Authorize]
+public abstract class BaseController : ControllerBase
 {
-    
+    private string AuthHeader => HttpContext.Request.Headers.Authorization.ToString();
+
+    protected Guid UserId => AuthHeader.GetUserId();
 }
