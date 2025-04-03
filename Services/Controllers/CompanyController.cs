@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 using DataAccess.Models;
 
 namespace Company.Controllers
@@ -7,20 +8,17 @@ namespace Company.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            // Временная заглушка
-            var company = new CompanyModel();
+        private readonly ICompanyService _companyService;   
 
-            return Ok(company);
+        public CompanyController(ICompanyService companyService) 
+        {
+            _companyService = companyService;
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            // Временная заглушка
-            var company = new CompanyModel();
+            var company = _companyService.GetCompanyByIdAsync(id);
 
             if (company == null)
                 return NotFound(new { Message = "Company not found" });
@@ -29,21 +27,23 @@ namespace Company.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CompanyModel company)
+        public async Task<IActionResult> Create(CompanyModel company)
         {
             if (company == null || string.IsNullOrEmpty(company.Name))
                 return BadRequest(new { Message = "Invalid company data" });
 
-            company.Id = Guid.NewGuid();
-            // Будет метод на сервис по добавлению компании в бд
-            return CreatedAtAction(nameof(GetById), new { id = company.Id }, company);
+            var createdCompany = await _companyService.CreateCompanyAsync(company);
+
+            if (createdCompany)
+                return Ok(new { Message = "Company created successfully"});
+
+            return StatusCode(500, new { Message = "Failed to create company" });
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] CompanyModel updatedCompany)
+        public IActionResult Update(Guid id, CompanyModel updatedCompany)
         {
-            // Временная заглушка
-            var company = new CompanyModel();
+            var company = _companyService.GetCompanyByIdAsync(id);
 
             if (company == null)
                 return NotFound(new { Message = "Company not found" });
@@ -51,24 +51,26 @@ namespace Company.Controllers
             if (updatedCompany == null || string.IsNullOrEmpty(updatedCompany.Name))
                 return BadRequest(new { Message = "Invalid company data" });
 
-            company.Name = updatedCompany.Name;
-            company.Description = updatedCompany.Description;
-            company.Supervisor_Id = updatedCompany.Supervisor_Id;
+            _companyService.UpdateCompanyAsync(id, updatedCompany);
 
-            return NoContent();
+            return Ok(); 
+            // Пересмотреть код
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            // Временная заглушка
-            var company = new CompanyModel();
+            var company = await _companyService.GetCompanyByIdAsync(id);
 
             if (company == null)
                 return NotFound(new { Message = "Company not found" });
 
-            // Будет вызов Remove в сервисе
-            return NoContent();
+            bool successfulDelete = await _companyService.DeleteCompanyAsync(id);
+
+            if (successfulDelete)
+                return Ok(new { Message = "Company deleted successfully" });
+
+            return StatusCode(500, new { Message = "Failed to delete company" });
         }
     }
 }
