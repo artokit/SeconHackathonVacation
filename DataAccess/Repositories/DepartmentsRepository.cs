@@ -16,7 +16,7 @@ public class DepartmentsRepository : IDepartmentsRepository
         
     public async Task<DbDepartment?> GetDepartmentsByIdAsync(int id)
     {
-        QueryObject queryObject = new QueryObject(
+        var queryObject = new QueryObject(
             @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"" FROM department
                 WHERE id == @id",
             new { id });
@@ -25,7 +25,7 @@ public class DepartmentsRepository : IDepartmentsRepository
 
     public async Task<DbDepartment> CreateDepartmentAsync(DbDepartment department)
     {
-        QueryObject queryObject = new QueryObject(
+        var queryObject = new QueryObject(
             @"INSERT INTO departments (name, description, supervisor_id) VALUES (@Name, @Description, @SupervisorId)
                 RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId""",
             new
@@ -40,7 +40,7 @@ public class DepartmentsRepository : IDepartmentsRepository
     
     public async Task<DbDepartment> UpdateDepartmentAsync(DbDepartment department)
     {
-        QueryObject queryObject = new QueryObject(
+        var queryObject = new QueryObject(
             @"UPDATE departments SET name = @name, description = @description, supervisor_id = @supervisorId
                 WHERE id=@id
                 RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId""",
@@ -54,7 +54,7 @@ public class DepartmentsRepository : IDepartmentsRepository
 
     public async Task DeleteDepartmentAsync(int id)
     {
-        QueryObject queryObject = new QueryObject(
+        var queryObject = new QueryObject(
             @"DELETE FROM departments WHERE id = @id",
             new { id = id });
         await _dapperContext.Command(queryObject);
