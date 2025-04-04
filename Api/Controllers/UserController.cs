@@ -1,11 +1,9 @@
-using Contracts.Users.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 
 namespace Api.Controllers;
 
-[ApiController]
-public class UserController : ControllerBase
+public class UserController : BaseController
 {
     private IUserService _userService;
     
@@ -14,15 +12,9 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequestDto registerRequestDto)
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
     {
-        return Ok(await _userService.RegisterAsync(registerRequestDto));
-    }
-    
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequestDto loginRequestDto)
-    {
-        return Ok(await _userService.LoginAsync(loginRequestDto));
+        return Ok(await _userService.GetMe(UserId));
     }
 }
