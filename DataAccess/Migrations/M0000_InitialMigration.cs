@@ -20,6 +20,12 @@ public class M0000_InitialMigration : Migration
             // .WithColumn("department_id").AsGuid()
             .WithColumn("role").AsString().Nullable();
             // .WithColumn("comapny_id").AsGuid();
+
+            Create.Table("departments")
+                .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid"))
+                .WithColumn("name").AsString().NotNullable()
+                .WithColumn("description").AsString().Nullable()
+                .WithColumn("supervisor_id").AsGuid().NotNullable().Unique();
     }
 
     public override void Down()
