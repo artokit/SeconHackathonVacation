@@ -43,4 +43,16 @@ public class UsersRepository : IUsersRepository
         
         return await _dapperContext.FirstOrDefault<DbUser>(queryObject);
     }
+
+    public async Task<DbUser?> GetUserById(Guid userId)
+    {
+        var queryObject = new QueryObject(
+            @"SELECT id as ""Id"", name as ""Name"", surname as ""Surname"", image_id as ""ImageId"", patronymic as ""Patronymic"", email as ""Email"", role as ""Role"", hashed_password as ""HashedPassword"" FROM USERS WHERE id=@id",
+            new
+            {
+                id = userId
+            });
+        
+        return await _dapperContext.FirstOrDefault<DbUser>(queryObject);
+    }
 }
