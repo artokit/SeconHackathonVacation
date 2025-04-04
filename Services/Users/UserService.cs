@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Common;
 using Contracts.Users.Requests;
 using Contracts.Users.Responses;
@@ -45,6 +44,7 @@ public class UserService : IUserService
     public async Task<LoginSuccessResponse> LoginAsync(LoginRequestDto loginRequestDto)
     {
         var res = await _usersRepository.GetUserByEmailAsync(loginRequestDto.Email);
+        
         if (res is null)
         {
             throw new FailureAuthorizationException();
@@ -56,6 +56,18 @@ public class UserService : IUserService
         }
 
         return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };
+    }
+
+    public async Task<GetMeResponseDto> GetMe(Guid userId)
+    {
+        var res = await _usersRepository.GetUserById(userId);
+        
+        if (res is null)
+        {
+            throw new UserNotFound();
+        }
+
+        return res.MapToDto();
     }
 
     private string GenerateAccessToken(DbUser user)

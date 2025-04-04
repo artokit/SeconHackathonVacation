@@ -24,6 +24,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 var authOptions = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -81,7 +82,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.Services.UseMigrations();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {

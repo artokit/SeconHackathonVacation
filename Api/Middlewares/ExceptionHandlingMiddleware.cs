@@ -22,7 +22,7 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
         {
             BadRequestException => StatusCodes.Status400BadRequest,
             NotFoundException => StatusCodes.Status404NotFound,
-            _ => StatusCodes.Status500InternalServerError
+            // _ => StatusCodes.Status500InternalServerError
         };
 
         await context.Response.WriteAsJsonAsync(new {error = e.Message});
