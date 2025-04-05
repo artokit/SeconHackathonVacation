@@ -1,6 +1,6 @@
 using System.Data;
 using Dapper;
-using DataAccess.Interfaces;
+using DataAccess.Common.Interfaces.Dapper;
 using Npgsql;
 
 namespace DataAccess.Dapper;

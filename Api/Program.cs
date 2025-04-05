@@ -1,10 +1,10 @@
+using Api.Extensions;
 using Api.Middlewares;
+using Common;
 using DataAccess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Services.Common.Settings;
-using Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();

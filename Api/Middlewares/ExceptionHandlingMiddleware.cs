@@ -1,4 +1,4 @@
-using Services.Exceptions.Abstractions;
+using Api.Exceptions.Abstractions;
 
 namespace Api.Middlewares;
 

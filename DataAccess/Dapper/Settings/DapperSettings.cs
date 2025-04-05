@@ -1,4 +1,4 @@
-using DataAccess.Interfaces.Settings;
+using DataAccess.Common.Interfaces.Dapper.Settings;
 using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Dapper.Settings;

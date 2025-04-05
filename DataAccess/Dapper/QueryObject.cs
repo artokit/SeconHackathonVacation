@@ -1,4 +1,4 @@
-using DataAccess.Interfaces;
+using DataAccess.Common.Interfaces.Dapper;
 
 namespace DataAccess.Dapper;
 

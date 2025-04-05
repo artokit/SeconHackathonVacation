@@ -1,9 +1,9 @@
 using System.Reflection;
+using DataAccess.Common.Interfaces.Dapper;
+using DataAccess.Common.Interfaces.Dapper.Settings;
 using DataAccess.Common.Interfaces.Repositories;
 using DataAccess.Dapper;
 using DataAccess.Dapper.Settings;
-using DataAccess.Interfaces;
-using DataAccess.Interfaces.Settings;
 using DataAccess.Repositories;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.Configuration;

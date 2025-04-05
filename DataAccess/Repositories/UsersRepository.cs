@@ -1,6 +1,6 @@
+using DataAccess.Common.Interfaces.Dapper;
 using DataAccess.Common.Interfaces.Repositories;
 using DataAccess.Dapper;
-using DataAccess.Interfaces;
 using DataAccess.Models;
 
 namespace DataAccess.Repositories;

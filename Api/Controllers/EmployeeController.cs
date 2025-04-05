@@ -1,8 +1,8 @@
 using Api.Controllers.Abstractions;
-using Contracts.Employees.Requests;
+using Api.Dto.Employees.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Common.Interfaces;
+using IEmployeeService = Api.Services.Interfaces.IEmployeeService;
 
 namespace Api.Controllers;
 
@@ -11,29 +11,29 @@ namespace Api.Controllers;
 [Authorize(Roles = "Director")]
 public class EmployeeController : BaseController
 {
-    private IEmployeesService _employeesService;
+    private IEmployeeService _employeeService;
     
-    public EmployeeController(IEmployeesService employeesService)
+    public EmployeeController(IEmployeeService employeeService)
     {
-        _employeesService = employeesService;
+        _employeeService = employeeService;
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateEmployee(CreateEmployeeRequestDto request)
     {
-        return Ok(await _employeesService.CreateAsync(UserId, request));
+        return Ok(await _employeeService.CreateAsync(UserId, request));
     }
 
     [HttpDelete]
     public async Task<IActionResult> DeleteEmployee(Guid employeeId)
     {
-        await _employeesService.DeleteAsync(UserId, employeeId);
+        await _employeeService.DeleteAsync(UserId, employeeId);
         return Ok();
     }
 
     [HttpPatch("{employeeId}")]
     public async Task<IActionResult> UpdateEmployee(Guid employeeId, [FromBody] UpdateEmployeeRequestDto updateRequestDto)
     {
-        return Ok(await _employeesService.UpdateAsync(UserId, employeeId, updateRequestDto));
+        return Ok(await _employeeService.UpdateAsync(UserId, employeeId, updateRequestDto));
     }
 }

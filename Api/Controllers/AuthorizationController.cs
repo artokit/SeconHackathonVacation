@@ -1,7 +1,6 @@
-using Contracts.Authorization.Requests;
-using Contracts.Users.Requests;
+using Api.Dto.Authorization.Requests;
 using Microsoft.AspNetCore.Mvc;
-using Services.Common.Interfaces;
+using IUserService = Api.Services.Interfaces.IUserService;
 
 namespace Api.Controllers;
 

@@ -1,6 +1,6 @@
 using Api.Controllers.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Services.Common.Interfaces;
+using IUserService = Api.Services.Interfaces.IUserService;
 
 namespace Api.Controllers;
 
