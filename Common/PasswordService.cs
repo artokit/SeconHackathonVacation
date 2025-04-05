@@ -11,4 +11,9 @@ public static class PasswordService
     {
         return BCrypt.Net.BCrypt.Verify(rawPassword, hashedPassword);
     }
+
+    public static string GeneratePassword()
+    {
+        return Guid.NewGuid().ToString().Replace("-", "");
+    }
 }

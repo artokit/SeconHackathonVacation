@@ -1,15 +1,17 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Common;
+using Contracts.Authorization.Requests;
+using Contracts.Employees.Responses;
 using Contracts.Users.Requests;
 using Contracts.Users.Responses;
 using DataAccess.Common.Interfaces.Repositories;
 using DataAccess.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Services.Common.Interfaces;
 using Services.Common.Settings;
 using Services.Exceptions.Users;
-using Services.Interfaces;
 using Services.Mappers;
 using ClaimTypes = System.Security.Claims.ClaimTypes;
 using CustomClaimTypes = Common.ClaimTypes;
@@ -29,21 +31,21 @@ public class UserService : IUserService
 
     public async Task<LoginSuccessResponse> RegisterAsync(RegisterRequestDto registerRequestDto)
     {
-        if (await _usersRepository.GetUserByEmailAsync(registerRequestDto.Email) != null)
+        if (await _usersRepository.GetByEmailAsync(registerRequestDto.Email) != null)
         {
-            throw new EmailsExistException();
+            throw new EmailIsExistException();
         }
         
         var dbUser = registerRequestDto.MapToDb();
         dbUser.Role = Roles.Director;
         
-        var res = await _usersRepository.CreateAsync(dbUser);
+        var res = await _usersRepository.AddAsync(dbUser);
         return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };
     }
 
     public async Task<LoginSuccessResponse> LoginAsync(LoginRequestDto loginRequestDto)
     {
-        var res = await _usersRepository.GetUserByEmailAsync(loginRequestDto.Email);
+        var res = await _usersRepository.GetByEmailAsync(loginRequestDto.Email);
         
         if (res is null)
         {
@@ -58,9 +60,9 @@ public class UserService : IUserService
         return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };
     }
 
-    public async Task<GetMeResponseDto> GetMe(Guid userId)
+    public async Task<GetEmployeeResponseDto> GetMe(Guid userId)
     {
-        var res = await _usersRepository.GetUserById(userId);
+        var res = await _usersRepository.GetByIdAsync(userId);
         
         if (res is null)
         {

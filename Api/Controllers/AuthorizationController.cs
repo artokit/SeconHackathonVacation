@@ -1,16 +1,17 @@
+using Contracts.Authorization.Requests;
 using Contracts.Users.Requests;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
+using Services.Common.Interfaces;
 
 namespace Api.Controllers;
 
 
 [ApiController]
-public class AuthController : ControllerBase
+public class AuthorizationController : ControllerBase
 {
     private IUserService _userService;
     
-    public AuthController(IUserService userService)
+    public AuthorizationController(IUserService userService)
     {
         _userService = userService;
     }

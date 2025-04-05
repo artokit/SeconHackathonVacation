@@ -1,6 +1,6 @@
 using Common;
+using Contracts.Employees.Responses;
 using Contracts.Users.Requests;
-using Contracts.Users.Responses;
 using DataAccess.Models;
 
 namespace Services.Mappers;
@@ -19,16 +19,19 @@ public static class UserMappers
         };
     }
 
-    public static GetMeResponseDto MapToDto(this DbUser dbUser)
+    public static GetEmployeeResponseDto MapToDto(this DbUser dbUser)
     {
-        return new GetMeResponseDto
+        return new GetEmployeeResponseDto
         {
             Id = dbUser.Id,
             Name = dbUser.Name,
             Surname = dbUser.Surname,
+            Patronymic = dbUser.Patronymic,
+            DepartmentId = dbUser.DepartmentId,
+            Phone = dbUser.Phone,
+            TelegramUsername = dbUser.TelegramUsername,
             Email = dbUser.Email,
             ImageId = dbUser.ImageId,
-            Patronymic = dbUser.Patronymic,
             Role = dbUser.Role
         };
     }

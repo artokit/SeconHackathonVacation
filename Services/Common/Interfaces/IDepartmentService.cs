@@ -1,6 +1,6 @@
 ﻿using Contracts.Departments.Responses;
 
-namespace Services.Interfaces;
+namespace Services.Common.Interfaces;
 
 public interface IDepartmentService
 {

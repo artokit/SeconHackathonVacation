@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Contracts.Users.Requests;
+namespace Contracts.Authorization.Requests;
 
 public class LoginRequestDto
 {

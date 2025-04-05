@@ -1,11 +1,13 @@
+using Contracts.Authorization.Requests;
+using Contracts.Employees.Responses;
 using Contracts.Users.Requests;
 using Contracts.Users.Responses;
 
-namespace Services.Interfaces;
+namespace Services.Common.Interfaces;
 
 public interface IUserService
 {
     public Task<LoginSuccessResponse> RegisterAsync(RegisterRequestDto registerRequestDto);
     public Task<LoginSuccessResponse> LoginAsync(LoginRequestDto loginRequestDto);
-    public Task<GetMeResponseDto> GetMe(Guid userId);
+    public Task<GetEmployeeResponseDto> GetMe(Guid userId);
 }

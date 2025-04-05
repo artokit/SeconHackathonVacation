@@ -2,7 +2,7 @@ using Services.Exceptions.Abstractions;
 
 namespace Services.Exceptions.Users;
 
-public class EmailsExistException : BadRequestException
+public class EmailIsExistException : BadRequestException
 {
-    public EmailsExistException(string? message = "Данный email уже занят") : base(message) { }
+    public EmailIsExistException(string? message = "Данный email уже занят") : base(message) { }
 }

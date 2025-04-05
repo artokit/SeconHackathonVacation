@@ -1,6 +1,6 @@
 ﻿using Contracts.Departments.Responses;
 using DataAccess.Common.Interfaces.Repositories;
-using Services.Interfaces;
+using Services.Common.Interfaces;
 
 namespace Services.Departments;
 
