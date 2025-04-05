@@ -83,11 +83,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.Services.UseMigrations();
-app.UseSwagger();
+app.UseSwagger(c =>
+{
+    c.RouteTemplate = "/vacation-service/swagger/{documentname}/swagger.json";
+});
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    c.RoutePrefix = "swagger";
+    c.SwaggerEndpoint("/vacation-service/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = "vacation-service/swagger";
 });
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

@@ -7,7 +7,7 @@ using IEmployeeService = Api.Services.Interfaces.IEmployeeService;
 namespace Api.Controllers;
 
 
-[Route("employees/")]
+[Route("vacation-service/employees/")]
 [Authorize(Roles = "Director")]
 public class EmployeeController : BaseController
 {

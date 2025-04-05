@@ -4,6 +4,7 @@ using IUserService = Api.Services.Interfaces.IUserService;
 
 namespace Api.Controllers;
 
+[Route("vacation-service/users")]
 public class UserController : BaseController
 {
     private IUserService _userService;

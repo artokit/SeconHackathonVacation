@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-[Route("[controller]")]
+[Route("vacation-service/[controller]")]
 [ApiController]
 public class CompanyController : ControllerBase
 {

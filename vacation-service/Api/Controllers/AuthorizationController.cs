@@ -6,6 +6,7 @@ namespace Api.Controllers;
 
 
 [ApiController]
+[Route("vacation-service")]
 public class AuthorizationController : ControllerBase
 {
     private IUserService _userService;
