@@ -1,4 +1,6 @@
-﻿using Api.Dto.Departments.Responses;
+﻿using Api.Dto.Departments.Requests;
+using Api.Dto.Departments.Responses;
+using Api.Mappers;
 using Api.Services.Interfaces;
 using DataAccess.Common.Interfaces.Repositories;
 
@@ -13,28 +15,32 @@ public class DepartmentService : IDepartmentService
         _departmentsRepository = departmentsRepository;
     }
 
+    public async Task<GetDepartmentResponseDto> CreateAsync(CreateDepartmentRequestDto registerRequestDto)
+    {
 
-    public GetDepartmentResponseDto CreateAsync()
+        var dbDepartment = registerRequestDto.MapToDb();
+
+        var res = await _departmentsRepository.CreateDepartmentAsync(dbDepartment);
+        return res.MapToDto();
+
+    }
+
+    public Task<GetDepartmentResponseDto> GetByIdAsync(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public GetDepartmentResponseDto GetByIdAsync()
+    public Task<List<GetDepartmentResponseDto>> GetAllAsync()
     {
         throw new NotImplementedException();
     }
 
-    public GetDepartmentResponseDto GetAllAsync()
+    public Task<GetDepartmentResponseDto> UpdateAsync(UpdateDepartmentRequestDto updateDepartmentRequestDto)
     {
         throw new NotImplementedException();
     }
 
-    public GetDepartmentResponseDto UpdateAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public GetDepartmentResponseDto DeleteAsync()
+    public Task DeleteAsync(int id)
     {
         throw new NotImplementedException();
     }

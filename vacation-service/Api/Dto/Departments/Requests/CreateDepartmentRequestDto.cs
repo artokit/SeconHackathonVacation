@@ -2,7 +2,7 @@
 
 namespace Api.Dto.Departments.Requests;
 
-public class CreateDepartmentRequestdto
+public class CreateDepartmentRequestDto
 {
     [Required(ErrorMessage = "Название отдела обязательно для заполнения.")]
     [MinLength(1, ErrorMessage = "Название отдела не может быть пустым.")]
