@@ -1,8 +1,8 @@
 using Common;
 
-namespace Api.Dto.Employees.Requests;
+namespace Api.Dto.Users.Requests;
 
-public class UpdateEmployeeRequestDto
+public class UpdateUserRequestDto
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }

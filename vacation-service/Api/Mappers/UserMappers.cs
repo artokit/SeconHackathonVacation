@@ -1,5 +1,6 @@
 using Api.Dto.Authorization.Requests;
-using Api.Dto.Employees.Responses;
+using Api.Dto.Users.Requests;
+using Api.Dto.Users.Responses;
 using Common;
 using DataAccess.Models;
 
@@ -19,9 +20,9 @@ public static class UserMappers
         };
     }
 
-    public static GetEmployeeResponseDto MapToDto(this DbUser dbUser)
+    public static GetUserResponseDto MapToDto(this DbUser dbUser)
     {
-        return new GetEmployeeResponseDto
+        return new GetUserResponseDto
         {
             Id = dbUser.Id,
             Name = dbUser.Name,
@@ -33,6 +34,19 @@ public static class UserMappers
             Email = dbUser.Email,
             ImageId = dbUser.ImageId,
             Role = dbUser.Role
+        };
+    }
+    
+    public static DbUser MapToDb(this CreateUserRequestDto request, string generatedPassword)
+    {
+        return new DbUser
+        {
+            Name = request.Name,
+            Surname = request.Surname,
+            Patronymic = request.Patronymic,
+            HashedPassword = generatedPassword.Hash(),
+            Email = request.Email,
+            Role = request.Role
         };
     }
 }

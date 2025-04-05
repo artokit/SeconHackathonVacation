@@ -1,64 +1,24 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Api.Dto.Authorization.Requests;
-using Api.Dto.Authorization.Responses;
-using Api.Dto.Employees.Responses;
+using Api.Dto.Users.Requests;
+using Api.Dto.Users.Responses;
 using Api.Exceptions.Users;
 using Api.Mappers;
 using Api.Services.Interfaces;
 using Common;
 using DataAccess.Common.Interfaces.Repositories;
-using DataAccess.Models;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using ClaimTypes = System.Security.Claims.ClaimTypes;
-using CustomClaimTypes = Common.ClaimTypes;
 
 namespace Api.Services;
+
 
 public class UserService : IUserService
 {
     private IUsersRepository _usersRepository;
-    private readonly JwtSettings _jwtSettings;
     
-    public UserService(IOptions<JwtSettings> jwtSettings, IUsersRepository usersRepository)
+    public UserService(IUsersRepository usersRepository)
     {
-        _jwtSettings = jwtSettings.Value;
         _usersRepository = usersRepository;
     }
 
-    public async Task<LoginSuccessResponse> RegisterAsync(RegisterRequestDto registerRequestDto)
-    {
-        if (await _usersRepository.GetByEmailAsync(registerRequestDto.Email) != null)
-        {
-            throw new EmailIsExistException();
-        }
-        
-        var dbUser = registerRequestDto.MapToDb();
-        dbUser.Role = Roles.Director;
-        
-        var res = await _usersRepository.AddAsync(dbUser);
-        return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };
-    }
-
-    public async Task<LoginSuccessResponse> LoginAsync(LoginRequestDto loginRequestDto)
-    {
-        var res = await _usersRepository.GetByEmailAsync(loginRequestDto.Email);
-        
-        if (res is null)
-        {
-            throw new FailureAuthorizationException();
-        }
-
-        if (!PasswordService.Verify(loginRequestDto.Password, res.HashedPassword))
-        {
-            throw new FailureAuthorizationException();
-        }
-
-        return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };
-    }
-
-    public async Task<GetEmployeeResponseDto> GetMe(Guid userId)
+    public async Task<GetUserResponseDto> GetMe(Guid userId)
     {
         var res = await _usersRepository.GetByIdAsync(userId);
         
@@ -69,28 +29,46 @@ public class UserService : IUserService
 
         return res.MapToDto();
     }
-
-    private string GenerateAccessToken(DbUser user)
+    
+    public async Task<GetUserResponseDto> CreateAsync(Guid userId, CreateUserRequestDto request)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = _jwtSettings.GetSymmetricSecurityKey();
-
-        var claims = new[]
+        if (await _usersRepository.GetByEmailAsync(request.Email) is not null)
         {
-            new Claim(CustomClaimTypes.Id.ToString(), user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
-        };
+            throw new EmailIsExistException();
+        }
 
-        var token = new JwtSecurityToken(
-            issuer: _jwtSettings.Issuer,
-            audience: _jwtSettings.Audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpiryInMinutes),
-            signingCredentials: new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256)
-        );
+        var generatedPassword = PasswordService.GeneratePassword();
 
-        return tokenHandler.WriteToken(token);
+        var res = await _usersRepository.AddAsync(request.MapToDb(generatedPassword));
+        await NotifyUserByEmail(request.Email);
+        
+        return res.MapToDto();
+    }
+
+    public async Task DeleteAsync(Guid userId, Guid employeeId)
+    {
+        // ToDo: добавить проверку, что челик, который отправил запрос, находится в этом же отделе.
+        
+        if (await _usersRepository.GetByIdAsync(employeeId) is null)
+        {
+            throw new UserNotFound();
+        }
+        
+        await _usersRepository.DeleteAsync(employeeId);
+    }
+
+    public Task<GetUserResponseDto> UpdateAsync(Guid userId, Guid employeeId, UpdateUserRequestDto request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<GetUserResponseDto>> GetByDepartmentIdAsync(Guid departmentId)
+    {
+        throw new NotImplementedException();
+    }
+    
+    private async Task NotifyUserByEmail(string email)
+    {
+        Console.WriteLine($"{email} оповещено");
     }
 }

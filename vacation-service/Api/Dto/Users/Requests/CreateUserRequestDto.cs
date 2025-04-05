@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Common;
 
-namespace Api.Dto.Employees.Requests;
+namespace Api.Dto.Users.Requests;
 
-public class CreateEmployeeRequestDto
+public class CreateUserRequestDto
 {
     [Required]
     [MinLength(1, ErrorMessage = "Имя не может быть пустым")]

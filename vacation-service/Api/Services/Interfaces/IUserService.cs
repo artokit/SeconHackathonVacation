@@ -1,12 +1,13 @@
-using Api.Dto.Authorization.Requests;
-using Api.Dto.Authorization.Responses;
-using Api.Dto.Employees.Responses;
+using Api.Dto.Users.Requests;
+using Api.Dto.Users.Responses;
 
 namespace Api.Services.Interfaces;
 
 public interface IUserService
 {
-    public Task<LoginSuccessResponse> RegisterAsync(RegisterRequestDto registerRequestDto);
-    public Task<LoginSuccessResponse> LoginAsync(LoginRequestDto loginRequestDto);
-    public Task<GetEmployeeResponseDto> GetMe(Guid userId);
+    public Task<GetUserResponseDto> GetMe(Guid userId);
+    public Task<GetUserResponseDto> CreateAsync(Guid userId, CreateUserRequestDto request);
+    public Task DeleteAsync(Guid userId, Guid employeeId);
+    public Task<GetUserResponseDto> UpdateAsync(Guid userId, Guid employeeId, UpdateUserRequestDto request);
+    public Task<List<GetUserResponseDto>> GetByDepartmentIdAsync(Guid departmentId);
 }

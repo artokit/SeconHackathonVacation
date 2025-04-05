@@ -1,8 +1,8 @@
 using Common;
 
-namespace Api.Dto.Employees.Responses;
+namespace Api.Dto.Users.Responses;
 
-public class GetEmployeeResponseDto
+public class GetUserResponseDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
