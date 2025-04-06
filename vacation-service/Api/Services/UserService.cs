@@ -3,6 +3,8 @@ using Api.Dto.Users.Responses;
 using Api.Exceptions.Users;
 using Api.Mappers;
 using Api.Services.Interfaces;
+using Application.Common.Interfaces;
+using Application.NotificationService.Models;
 using Common;
 using DataAccess.Common.Interfaces.Repositories;
 
@@ -12,10 +14,12 @@ namespace Api.Services;
 public class UserService : IUserService
 {
     private IUsersRepository _usersRepository;
+    private INotificationServiceClient _notificationServiceClient;
     
-    public UserService(IUsersRepository usersRepository)
+    public UserService(IUsersRepository usersRepository, INotificationServiceClient notificationServiceClient)
     {
         _usersRepository = usersRepository;
+        _notificationServiceClient = notificationServiceClient;
     }
 
     public async Task<GetUserResponseDto> GetMe(Guid userId)
@@ -40,7 +44,11 @@ public class UserService : IUserService
         var generatedPassword = PasswordService.GeneratePassword();
 
         var res = await _usersRepository.AddAsync(request.MapToDb(generatedPassword));
-        await NotifyUserByEmail(request.Email);
+        await _notificationServiceClient.SendGeneratedPasswordAsync(new GeneratedPasswordRequest
+        {
+            ToEmail = request.Email,
+            Password = generatedPassword
+        });
         
         return res.MapToDto();
     }
@@ -65,10 +73,5 @@ public class UserService : IUserService
     public Task<List<GetUserResponseDto>> GetByDepartmentIdAsync(Guid departmentId)
     {
         throw new NotImplementedException();
-    }
-    
-    private async Task NotifyUserByEmail(string email)
-    {
-        Console.WriteLine($"{email} оповещено");
     }
 }

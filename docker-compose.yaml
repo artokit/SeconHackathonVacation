@@ -17,6 +17,15 @@ services:
     networks:
       - backend
   
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/d1ata
+    networks:
+      - backend
+  
   api:
     build:
       context: ./
@@ -42,6 +51,7 @@ services:
 
 volumes:
   pgdata:
+  redis_data:
 
 networks:
   backend:
