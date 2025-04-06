@@ -1,5 +1,6 @@
 using Api.Extensions;
 using Api.Middlewares;
+using Application.Extensions;
 using Common;
 using DataAccess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+builder.Services.AddInternalServices();
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddMigrations(builder.Configuration);
