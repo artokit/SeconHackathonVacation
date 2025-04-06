@@ -26,9 +26,9 @@ services:
     networks:
       - backend
   
-  api:
+  vacation-service:
     build:
-      context: ./
+      context: ./vacation-service
       dockerfile: ./Api/Dockerfile
     networks:
       - backend
@@ -48,7 +48,30 @@ services:
     networks:
       - backend
     restart: unless-stopped
+  
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    env_file:
+      - ./notification-service/.env
+    ports:
+      - "8000"
+    restart: always
+    networks:
+      - backend
 
+  notification-service-worker:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile.worker
+    env_file:
+      - ./notification-service/.env
+    restart: always
+    networks:
+      - backend
+  
+    
 volumes:
   pgdata:
   redis_data:
