@@ -20,7 +20,7 @@ services:
   redis:
     image: redis:latest
     ports:
-      - "6379:6379"
+      - "6379"
     volumes:
       - redis_data:/d1ata
     networks:
@@ -56,7 +56,7 @@ services:
     env_file:
       - ./notification-service/.env
     ports:
-      - "8000"
+      - "8001"
     restart: always
     networks:
       - backend
