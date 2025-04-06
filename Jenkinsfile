@@ -13,6 +13,7 @@ pipeline {
         stage('Rebuild Docker') {
             steps {
                 script {
+                    sh 'sudo chmod 777 ./notification-service/'
                     sh 'cp $ENV_FILE ./notification-service/.env'
                     sh 'docker-compose up --build -d'
                 }
