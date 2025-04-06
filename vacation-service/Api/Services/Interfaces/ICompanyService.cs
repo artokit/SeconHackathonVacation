@@ -1,11 +1,15 @@
+using Api.Dto.Companies.Request;
+using Api.Dto.Companies.Responses;
 using DataAccess.Models;
 
 namespace Api.Services.Interfaces;
 
 public interface ICompanyService
 {
-    public Task<bool> CreateCompanyAsync(DbCompany companyModel);
-    public Task<DbCompany> GetCompanyByIdAsync(Guid companyId);
-    public Task<DbCompany> UpdateCompanyAsync(Guid companyId, DbCompany updatedCompany);
-    public Task<bool> DeleteCompanyAsync(Guid companyId);
+    Task<bool> CreateCompanyAsync(CreateCompanyRequestDto dto);
+    Task<List<GetCompanyResponseDto>> GetAllCompaniesAsync();
+    Task<GetCompanyResponseDto?> GetCompanyByIdAsync(Guid id);
+    Task<GetCompanyResponseDto?> UpdateCompanyAsync(Guid id, UpdateCompanyRequestDto dto);
+    Task<bool> DeleteCompanyAsync(Guid id);
+
 }
