@@ -1,41 +1,87 @@
-﻿using Api.Dto.Departments.Responses;
+﻿using Api.Dto.Departments.Requests;
+using Api.Dto.Departments.Responses;
+using Api.Exceptions.Departments;
+using Api.Exceptions.Users;
+using Api.Mappers;
 using Api.Services.Interfaces;
 using DataAccess.Common.Interfaces.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Services;
 
 public class DepartmentService : IDepartmentService
 {
     private IDepartmentsRepository _departmentsRepository;
+    private IUsersRepository _usersRepository;
 
-    public DepartmentService(IDepartmentsRepository departmentsRepository)
+    public DepartmentService(IDepartmentsRepository departmentsRepository, IUsersRepository usersRepository)
     {
         _departmentsRepository = departmentsRepository;
+        _usersRepository = usersRepository;
     }
 
-
-    public GetDepartmentResponseDto CreateAsync()
+    public async Task<GetDepartmentResponseDto> CreateAsync(CreateDepartmentRequestDto registerRequestDto)
     {
-        throw new NotImplementedException();
+        if (await _usersRepository.GetByIdAsync(registerRequestDto.SupervisorId) is null)
+        {
+            throw new SupervisorNotFound();
+        }
+        var dbDepartment = registerRequestDto.MapToDb();
+
+        var res = await _departmentsRepository.CreateDepartmentAsync(dbDepartment);
+        return res.MapToDto();
+
     }
 
-    public GetDepartmentResponseDto GetByIdAsync()
+    public async Task<GetDepartmentResponseDto> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var res = await _departmentsRepository.GetDepartmentsByIdAsync(id);
+        
+        if (res is null)
+        {
+            throw new DepartmentNotFound();
+        }
+        
+        return res.MapToDto();
     }
 
-    public GetDepartmentResponseDto GetAllAsync()
+    public async Task<List<GetDepartmentResponseDto>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var res = await _departmentsRepository.GetAllDepartments();
+
+        if (res.Any())
+        {
+            throw new CompanyIsNotExistDepartments();
+        }
+
+        return res.MapToDto();
     }
 
-    public GetDepartmentResponseDto UpdateAsync()
+    public async Task<GetDepartmentResponseDto> UpdateAsync(Guid id, UpdateDepartmentRequestDto updateDepartmentRequestDto)
     {
-        throw new NotImplementedException();
+        if (await _departmentsRepository.GetDepartmentsByIdAsync(id) is null)
+        {
+            throw new DepartmentNotFound();
+        }
+        
+        if (await _usersRepository.GetByIdAsync(updateDepartmentRequestDto.SupervisorId) is null)
+        {
+            throw new SupervisorNotFound();
+        }
+        
+        var dbDepartment = updateDepartmentRequestDto.MapToDb();
+
+        var res = await _departmentsRepository.UpdateDepartmentAsync(id, dbDepartment);
+        return res.MapToDto();
     }
 
-    public GetDepartmentResponseDto DeleteAsync()
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        if (await _departmentsRepository.GetDepartmentsByIdAsync(id) is null)
+        {
+            throw new DepartmentNotFound();
+        }
+        
+        await _departmentsRepository.DeleteDepartmentAsync(id);
     }
 }

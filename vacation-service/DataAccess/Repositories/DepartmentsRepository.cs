@@ -14,14 +14,22 @@ public class DepartmentsRepository : IDepartmentsRepository
         _dapperContext = dapperContext;
     } 
         
-    public async Task<DbDepartment?> GetDepartmentsByIdAsync(int id)
+    public async Task<DbDepartment?> GetDepartmentsByIdAsync(Guid id)
     {
         var queryObject = new QueryObject(
-            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"" FROM department
-                WHERE id == @id",
+            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"" FROM departments
+                WHERE id = @id",
             new { id });
         return await _dapperContext.FirstOrDefault<DbDepartment>(queryObject);
     }
+
+    public async Task<List<DbDepartment?>> GetAllDepartments()
+    {
+        var queryObject = new QueryObject(
+            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"" FROM departments");
+        return await _dapperContext.ListOrEmpty<DbDepartment?>(queryObject);
+    }
+
 
     public async Task<DbDepartment> CreateDepartmentAsync(DbDepartment department)
     {
@@ -38,25 +46,25 @@ public class DepartmentsRepository : IDepartmentsRepository
         return await _dapperContext.CommandWithResponse<DbDepartment>(queryObject);
     }
     
-    public async Task<DbDepartment> UpdateDepartmentAsync(DbDepartment department)
+    public async Task<DbDepartment> UpdateDepartmentAsync(Guid departmentId, DbDepartment department)
     {
         var queryObject = new QueryObject(
-            @"UPDATE departments SET name = @name, description = @description, supervisor_id = @supervisorId
+            @"UPDATE departments SET name = @name, description = @description, supervisor_id = @supervisor_Id
                 WHERE id=@id
                 RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId""",
             new
             {
-                id = department.Id, name = department.Name, description = department.Description,
-                supervisorId = department.SupervisorId
+                id = departmentId, name = department.Name, description = department.Description,
+                supervisor_id = department.SupervisorId
             });
         return await _dapperContext.CommandWithResponse<DbDepartment>(queryObject);
     }
 
-    public async Task DeleteDepartmentAsync(int id)
+    public async Task DeleteDepartmentAsync(Guid id)
     {
         var queryObject = new QueryObject(
             @"DELETE FROM departments WHERE id = @id",
-            new { id = id });
+            new { id });
         await _dapperContext.Command(queryObject);
     }
 }

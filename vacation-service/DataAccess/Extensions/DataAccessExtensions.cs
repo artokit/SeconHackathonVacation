@@ -19,6 +19,7 @@ public static class DataAccessExtensions
         services.AddScoped<IDapperContext, DapperContext>();
         
         services.AddScoped<IUsersRepository, UsersRepository>();
+        services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
         return services;
     }
     
