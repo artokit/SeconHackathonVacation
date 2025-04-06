@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    environment {
+        ENV_FILE = credentials('notification-service-env')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -11,10 +13,8 @@ pipeline {
         stage('Rebuild Docker') {
             steps {
                 script {
-                    sh 'docker-compose down || true'
-                    
-                    sh 'docker-compose build --no-cache'
-                    sh 'docker-compose up -d'
+                    sh 'cp $ENV_FILE ./notification-service/.env'
+                    sh 'docker-compose up --build -d'
                 }
             }
         }
