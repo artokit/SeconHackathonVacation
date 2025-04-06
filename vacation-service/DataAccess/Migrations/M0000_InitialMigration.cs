@@ -25,7 +25,7 @@ public class M0000_InitialMigration : Migration
             .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid()"))
             .WithColumn("name").AsString().NotNullable()
             .WithColumn("description").AsString().Nullable()
-            .WithColumn("supervisor_id").AsGuid().NotNullable().Unique();
+            .WithColumn("supervisor_id").AsGuid().NotNullable();
     }
 
     public override void Down()

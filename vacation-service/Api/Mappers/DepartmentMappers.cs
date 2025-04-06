@@ -17,14 +17,30 @@ public static class DepartmentMappers
         };
     }
     
-    public static GetDepartmentResponseDto MapToDto(this DbDepartment requestDto)
+    public static DbDepartment MapToDb(this UpdateDepartmentRequestDto requestDto)
     {
-        return new GetDepartmentResponseDto
+        return new DbDepartment
         {
-            Id = requestDto.Id,
             Name = requestDto.Name,
             Description = requestDto.Description,
             SupervisorId = requestDto.SupervisorId
+        };
+    }
+
+
+    public static List<GetDepartmentResponseDto> MapToDto(this List<DbDepartment> dbDepartments)
+    {
+        return dbDepartments.Select(x => x.MapToDto()).ToList();
+    }
+        
+    public static GetDepartmentResponseDto MapToDto(this DbDepartment dbDepartment)
+    {
+        return new GetDepartmentResponseDto
+        {
+            Id = dbDepartment.Id,
+            Name = dbDepartment.Name,
+            Description = dbDepartment.Description,
+            SupervisorId = dbDepartment.SupervisorId
         };
     }
 }
