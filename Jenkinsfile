@@ -13,7 +13,8 @@ pipeline {
         stage('Rebuild Docker') {
             steps {
                 script {
-                    sh 'cat $ENV_FILE > ./notification-service/.env'
+                    sh 'cp $ENV_FILE ~/temp.env'
+                    sh 'mv ~/temp.env ./notification-service/.env'
                     sh 'docker-compose up --build -d'
                 }
             }
