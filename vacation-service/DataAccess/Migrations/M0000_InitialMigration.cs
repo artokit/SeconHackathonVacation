@@ -26,11 +26,18 @@ public class M0000_InitialMigration : Migration
             .WithColumn("name").AsString().NotNullable()
             .WithColumn("description").AsString().Nullable()
             .WithColumn("supervisor_id").AsGuid().NotNullable();
+
+        Create.Table("companies")
+            .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid()"))
+            .WithColumn("name").AsString().NotNullable()
+            .WithColumn("description").AsString().Nullable()
+            .WithColumn("supervisor_id").AsGuid().NotNullable();
     }
 
     public override void Down()
     {
         Delete.Table("users");
         Delete.Table("departments");
+        Delete.Table("companies");
     }
 }
