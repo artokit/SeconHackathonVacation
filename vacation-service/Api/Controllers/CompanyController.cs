@@ -1,12 +1,12 @@
+using Api.Controllers.Abstractions;
 using Api.Dto.Companies.Request;
 using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-[Route("vacation-service/company")]
-[ApiController]
-public class CompanyController : ControllerBase
+[Route("vacation-service/companies")]
+public class CompanyController : BaseController
 {
     private readonly ICompanyService _companyService;
 
@@ -15,57 +15,28 @@ public class CompanyController : ControllerBase
         _companyService = companyService;
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var company = await _companyService.GetCompanyByIdAsync(id);
-
-        if (company == null)
-            return NotFound(new { Message = "Компания не найдена" });
-
-        return Ok(company);
-    }
-
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateCompanyRequestDto dto)
+    public async Task<IActionResult> Create(CreateCompanyRequestDto dto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var created = await _companyService.CreateCompanyAsync(dto);
-
-        return Ok(new { Message = "Компания успешно создана" });
+        return Ok(await _companyService.CreateCompanyAsync(dto));
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCompanyRequestDto dto)
+    [HttpGet("{companyId}")]
+    public async Task<IActionResult> GetById(Guid companyId)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var updated = await _companyService.UpdateCompanyAsync(id, dto);
-
-        if (updated == null)
-            return NotFound(new { Message = "Компания не найдена" });
-
-        return Ok(updated);
+        return Ok(await _companyService.GetCompanyByIdAsync(companyId));
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpPatch("{companyId}")]
+    public async Task<IActionResult> Update(Guid companyId, UpdateCompanyRequestDto dto)
     {
-        var deleted = await _companyService.DeleteCompanyAsync(id);
-
-        if (!deleted)
-            return NotFound(new { Message = "Компания не найдена или не удалось удалить" });
-
-        return Ok(new { Message = "Компания успешно удалена" });
+        return Ok(await _companyService.UpdateCompanyAsync(companyId, dto));
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [HttpDelete("{companyId}")]
+    public async Task<IActionResult> Delete(Guid companyId)
     {
-        var companies = await _companyService.GetAllCompaniesAsync();
-        return Ok(companies);
+        await _companyService.DeleteCompanyAsync(companyId);
+        return NoContent();
     }
 }
