@@ -10,6 +10,7 @@ public static class ApiExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<ICompanyService, CompanyService>();
         return services;
     }
 }

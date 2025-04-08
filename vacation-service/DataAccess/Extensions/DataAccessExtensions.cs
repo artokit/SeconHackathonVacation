@@ -20,6 +20,7 @@ public static class DataAccessExtensions
         
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
         return services;
     }
     
