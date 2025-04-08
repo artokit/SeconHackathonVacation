@@ -23,11 +23,11 @@ public class DepartmentsRepository : IDepartmentsRepository
         return await _dapperContext.FirstOrDefault<DbDepartment>(queryObject);
     }
 
-    public async Task<List<DbDepartment?>> GetAllDepartments()
+    public async Task<List<DbDepartment>> GetAllDepartments()
     {
         var queryObject = new QueryObject(
             @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"" FROM departments");
-        return await _dapperContext.ListOrEmpty<DbDepartment?>(queryObject);
+        return await _dapperContext.ListOrEmpty<DbDepartment>(queryObject);
     }
 
 
