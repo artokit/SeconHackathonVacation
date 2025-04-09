@@ -5,19 +5,19 @@ using DataAccess.Models;
 
 namespace DataAccess.Repositories;
 
-public class DepartmentsRepository : IDepartmentsRepository
+public class DepartmentsesRepository : IDepartmentsRepository
 {
     private IDapperContext _dapperContext;
 
-    public DepartmentsRepository(IDapperContext dapperContext)
+    public DepartmentsesRepository(IDapperContext dapperContext)
     {
         _dapperContext = dapperContext;
     } 
         
-    public async Task<DbDepartment?> GetDepartmentsByIdAsync(Guid id)
+    public async Task<DbDepartment?> GetDepartmentByIdAsync(Guid id)
     {
         var queryObject = new QueryObject(
-            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"" FROM departments
+            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId"" FROM departments
                 WHERE id = @id",
             new { id });
         return await _dapperContext.FirstOrDefault<DbDepartment>(queryObject);
@@ -34,14 +34,15 @@ public class DepartmentsRepository : IDepartmentsRepository
     public async Task<DbDepartment> CreateDepartmentAsync(DbDepartment department)
     {
         var queryObject = new QueryObject(
-            @"INSERT INTO departments (name, description, supervisor_id) VALUES (@Name, @Description, @SupervisorId)
+            @"INSERT INTO departments (name, description, supervisor_id, company_id) VALUES (@Name, @Description, @SupervisorId, @CompanyId)
                 RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId""",
             new
             {
                 department.Id,
                 department.Name,
                 department.Description,
-                department.SupervisorId
+                department.SupervisorId,
+                department.CompanyId
             });
         return await _dapperContext.CommandWithResponse<DbDepartment>(queryObject);
     }

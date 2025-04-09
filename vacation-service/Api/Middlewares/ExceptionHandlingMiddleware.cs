@@ -21,7 +21,8 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
         context.Response.StatusCode = e switch
         {
             BadRequestException => StatusCodes.Status400BadRequest,
-            NotFoundException => StatusCodes.Status404NotFound,
+            NotFoundRequestException => StatusCodes.Status404NotFound,
+            ForbiddenRequestException => StatusCodes.Status403Forbidden,
             // _ => StatusCodes.Status500InternalServerError
         };
 

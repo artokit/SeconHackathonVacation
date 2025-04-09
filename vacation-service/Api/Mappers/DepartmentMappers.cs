@@ -13,7 +13,7 @@ public static class DepartmentMappers
         {
             Name = requestDto.Name,
             Description = requestDto.Description,
-            SupervisorId = requestDto.SupervisorId
+            // SupervisorId = requestDto.SupervisorId
         };
     }
     

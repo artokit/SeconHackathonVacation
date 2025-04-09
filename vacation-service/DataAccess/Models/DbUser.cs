@@ -12,7 +12,7 @@ public class DbUser
     public string Email { get; set; }
     public Roles Role { get; set; }
     public Guid? ImageId { get; set; }
-    public Guid DepartmentId { get; set; }
-    public string? Phone { get; set; }
+    public Guid? DepartmentId { get; set; }
+    public string? Phone { get; set; }  
     public string? TelegramUsername { get; set; }
 }

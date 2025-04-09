@@ -6,5 +6,6 @@ namespace Common;
 public enum Roles
 {
     Director,
+    Hr,
     Worker
 }

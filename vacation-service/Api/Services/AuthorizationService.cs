@@ -46,12 +46,12 @@ public class AuthorizationService : IAuthorizationService
         
         if (res is null)
         {
-            throw new FailureAuthorizationException();
+            throw new FailureAuthorizationRequestException();
         }
 
         if (!PasswordService.Verify(loginRequestDto.Password, res.HashedPassword))
         {
-            throw new FailureAuthorizationException();
+            throw new FailureAuthorizationRequestException();
         }
 
         return new LoginSuccessResponse { AccessToken = GenerateAccessToken(res) };

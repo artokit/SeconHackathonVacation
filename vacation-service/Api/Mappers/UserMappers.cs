@@ -46,7 +46,25 @@ public static class UserMappers
             Patronymic = request.Patronymic,
             HashedPassword = generatedPassword.Hash(),
             Email = request.Email,
-            Role = request.Role
+            Role = request.Role,
+            DepartmentId = request.DepartmentId
+        };
+    }
+
+    public static DbUser MapToDb(this UpdateUserRequestDto user, DbUser dbUser)
+    {
+        return new DbUser
+        {
+            Id = dbUser.Id,
+            Name = user.Name ?? dbUser.Name,
+            Surname = user.Surname ?? dbUser.Surname,
+            Patronymic = user.Patronymic ?? dbUser.Patronymic,
+            ImageId = user.ImageId ?? dbUser.ImageId,
+            HashedPassword = dbUser.HashedPassword,
+            Phone = user.Phone ?? dbUser.Phone,
+            TelegramUsername = user.TelegramUsername ?? dbUser.TelegramUsername,
+            DepartmentId = user.DepartmentId ?? dbUser.DepartmentId,
+            Email = dbUser.Email
         };
     }
 }

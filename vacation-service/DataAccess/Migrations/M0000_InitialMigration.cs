@@ -19,19 +19,20 @@ public class M0000_InitialMigration : Migration
             .WithColumn("email").AsString().NotNullable().Unique()
             .WithColumn("telegram_username").AsString().Nullable()
             .WithColumn("department_id").AsGuid().Nullable()
-            .WithColumn("role").AsString().Nullable(); 
+            .WithColumn("role").AsString().NotNullable();
         
         Create.Table("departments")
             .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid()"))
             .WithColumn("name").AsString().NotNullable()
             .WithColumn("description").AsString().Nullable()
-            .WithColumn("supervisor_id").AsGuid().NotNullable();
+            .WithColumn("supervisor_id").AsGuid().NotNullable()
+            .WithColumn("company_id").AsGuid().NotNullable();
 
         Create.Table("companies")
             .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid()"))
             .WithColumn("name").AsString().NotNullable()
             .WithColumn("description").AsString().Nullable()
-            .WithColumn("supervisor_id").AsGuid().NotNullable();
+            .WithColumn("director_id").AsGuid().NotNullable();
     }
 
     public override void Down()

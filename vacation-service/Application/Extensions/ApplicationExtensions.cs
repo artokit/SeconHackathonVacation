@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 using Application.NotificationService;
+using Application.FileService;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Extensions;
@@ -10,6 +11,7 @@ public static class ApplicationExtensions
     {
         services.AddHttpClient();
         services.AddScoped<INotificationServiceClient, NotificationServiceClient>();
+        services.AddScoped<IFileServiceClient, FileServiceClient>();
         return services;
     }
 }

@@ -1,5 +1,6 @@
 using Api.Controllers.Abstractions;
 using Api.Dto.Users.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IUserService = Api.Services.Interfaces.IUserService;
 
@@ -34,9 +35,9 @@ public class UserController : BaseController
         return NoContent();
     }
 
-    [HttpPatch("{userId}")]
-    public async Task<IActionResult> Update(Guid userId, [FromBody] UpdateUserRequestDto updateRequestDto)
+    [HttpPatch]
+    public async Task<IActionResult> Update([FromBody] UpdateUserRequestDto updateRequestDto)
     {
-        return Ok(await _userService.UpdateAsync(UserId, userId, updateRequestDto));
+        return Ok(await _userService.UpdateAsync(UserId, updateRequestDto));
     }
 }
