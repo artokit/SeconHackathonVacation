@@ -19,16 +19,18 @@ public class UserService : IUserService
     private readonly INotificationServiceClient _notificationServiceClient;
     private readonly IDepartmentsRepository _departmentsRepository;
     private readonly IFileServiceClient _fileServiceClient;
+    private readonly ICompaniesRepository _companiesRepository;
     
-    public UserService(IUsersRepository usersRepository, INotificationServiceClient notificationServiceClient, IDepartmentsRepository departmentsRepository, IFileServiceClient fileServiceClient)
+    public UserService(IUsersRepository usersRepository, INotificationServiceClient notificationServiceClient, IDepartmentsRepository departmentsRepository, IFileServiceClient fileServiceClient, ICompaniesRepository companiesRepository)
     {
         _usersRepository = usersRepository;
         _notificationServiceClient = notificationServiceClient;
         _departmentsRepository = departmentsRepository;
         _fileServiceClient = fileServiceClient;
+        _companiesRepository = companiesRepository;
     }
 
-    public async Task<GetUserResponseDto> GetMe(Guid userId)
+    public async Task<GetMeResponseDto> GetMe(Guid userId)
     {
         var res = await _usersRepository.GetByIdAsync(userId);
         
@@ -37,7 +39,26 @@ public class UserService : IUserService
             throw new UserNotFoundRequest();
         }
 
-        return res.MapToDto();
+        var userDto = res.MapToGetMeDto();
+        
+        if (res.DepartmentId is not null)
+        {
+            var department = await _departmentsRepository.GetDepartmentByIdAsync((Guid)res.DepartmentId);
+
+            if (department is not null)
+            {
+                var company = await _companiesRepository.GetCompanyByIdAsync(department.CompanyId);
+                
+                if (company is null)
+                {
+                    throw new CompanyNotFoundException();
+                }
+                
+                userDto.Company = company.MapToDto();
+            }
+        }
+
+        return userDto;
     }
     
     public async Task<GetUserResponseDto> CreateAsync(Guid userId, CreateUserRequestDto request)
@@ -140,24 +161,51 @@ public class UserService : IUserService
         var user = await _usersRepository.GetByIdAsync(userId);
         var userToUpdate = await _usersRepository.GetByIdAsync(request.UserId);
         
+        // Проверка на сущесвование пользователей.
         if (user is null || userToUpdate is null)
         {
             throw new UserNotFoundRequest();
         }
         
+        var currentDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)userToUpdate.DepartmentId!);
+        var userDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)user.DepartmentId!);
+        
+        await Task.WhenAll(currentDepartmentTask, userDepartmentTask);
+
+        var currentDepartment = currentDepartmentTask.Result;
+        var userDepartment = userDepartmentTask.Result;
+
+        if (currentDepartment is null || userDepartment is null)
+        {
+            throw new DepartmentNotFoundRequest();
+        }
+        
+        // Проверка что пользователи в одной компании.
+        if (user.Id != userToUpdate.Id && userDepartment.CompanyId != currentDepartment.CompanyId)
+        {
+            throw new UserNotFoundRequest();
+        }
+        
+        // Проверка на то, что пользователю хотят поменять отдел.
         if (request.DepartmentId is not null)
         {
-            var currentDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)user.DepartmentId!);
-            var updatedDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)request.DepartmentId);
-
-            await Task.WhenAll(currentDepartmentTask, updatedDepartmentTask);
-
-            var currentDepartment = currentDepartmentTask.Result;
-            var updatedDepartment = updatedDepartmentTask.Result;
-
-            if (currentDepartment.CompanyId != updatedDepartment.CompanyId)
+            // Проверка, что у человека есть права на то, чтобы поменять отдел.
+            if (user.Role is not Roles.Director && user.Role is not Roles.Hr)
+            {
+                throw new CantEditDepartmentException();
+            }
+            
+            var updatedDepartment = await _departmentsRepository.GetDepartmentByIdAsync((Guid)request.DepartmentId!);
+            
+            if (updatedDepartment is null)
             {
                 throw new DepartmentNotFoundRequest();
+            }
+            
+            // Проверка, что меняют на отдел, который находится в той же компании.
+            if (currentDepartment.CompanyId != updatedDepartment.CompanyId)
+            {
+                throw new UserNotFoundRequest();
             }
         }
 
