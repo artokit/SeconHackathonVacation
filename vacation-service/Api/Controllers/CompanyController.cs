@@ -18,25 +18,18 @@ public class CompanyController : BaseController
     [HttpPost]
     public async Task<IActionResult> Create(CreateCompanyRequestDto dto)
     {
-        return Ok(await _companyService.CreateCompanyAsync(dto));
+        return Ok(await _companyService.CreateCompanyAsync(UserId, dto));
     }
 
-    [HttpGet("{companyId}")]
-    public async Task<IActionResult> GetById(Guid companyId)
+    [HttpGet]
+    public async Task<IActionResult> GetById()
     {
-        return Ok(await _companyService.GetCompanyByIdAsync(companyId));
+        return Ok(await _companyService.GetCompanyByUserIdAsync(UserId));
     }
 
     [HttpPatch("{companyId}")]
     public async Task<IActionResult> Update(Guid companyId, UpdateCompanyRequestDto dto)
     {
-        return Ok(await _companyService.UpdateCompanyAsync(companyId, dto));
-    }
-
-    [HttpDelete("{companyId}")]
-    public async Task<IActionResult> Delete(Guid companyId)
-    {
-        await _companyService.DeleteCompanyAsync(companyId);
-        return NoContent();
+        return Ok(await _companyService.UpdateCompanyAsync(UserId, companyId, dto));
     }
 }

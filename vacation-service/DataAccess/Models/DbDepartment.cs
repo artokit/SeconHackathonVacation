@@ -6,4 +6,5 @@ public class DbDepartment
     public string Name { get; set; }
     public string? Description { get; set; }
     public Guid SupervisorId { get; set; }
+    public Guid CompanyId { get; set; }
 }

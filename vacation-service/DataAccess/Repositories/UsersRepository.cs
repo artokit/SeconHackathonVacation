@@ -17,9 +17,9 @@ public class UsersRepository : IUsersRepository
     public async Task<DbUser> AddAsync(DbUser dbUser)
     {
         var queryObject = new QueryObject(
-            @"INSERT INTO users(name, surname, patronymic, hashed_password, email, role) 
-            VALUES(@Name, @Surname, @Patronymic, @HashedPassword, @Email, @role) 
-            RETURNING id as ""Id"", name as ""Name"", surname as ""Surname"", image_id as ""ImageId"", patronymic as ""Patronymic"", email as ""Email"", role as ""Role"", hashed_password as ""HashedPassword"", telegram_username as ""TelegramUsername"", phone as ""Phone""",
+            @"INSERT INTO users(name, surname, patronymic, hashed_password, email, role, department_id) 
+            VALUES(@Name, @Surname, @Patronymic, @HashedPassword, @Email, @role, @DepartmentId) 
+            RETURNING id as ""Id"", name as ""Name"", surname as ""Surname"", image_id as ""ImageId"", patronymic as ""Patronymic"", email as ""Email"", role as ""Role"", hashed_password as ""HashedPassword"", telegram_username as ""TelegramUsername"", phone as ""Phone"", department_id as ""DepartmentId""",
             new
             {
                 dbUser.Name,
@@ -27,7 +27,8 @@ public class UsersRepository : IUsersRepository
                 dbUser.Patronymic,
                 HashedPassword = dbUser.HashedPassword,
                 dbUser.Email,
-                role = dbUser.Role
+                role = dbUser.Role,
+                DepartmentId = dbUser.DepartmentId
             });
         
         var res = await _dapperContext.CommandWithResponse<DbUser>(queryObject);
@@ -47,7 +48,7 @@ public class UsersRepository : IUsersRepository
     public async Task<DbUser?> GetByIdAsync(Guid userId)
     {
         var queryObject = new QueryObject(
-            @"SELECT id as ""Id"", name as ""Name"", surname as ""Surname"", image_id as ""ImageId"", patronymic as ""Patronymic"", email as ""Email"", role as ""Role"", hashed_password as ""HashedPassword"", telegram_username as ""TelegramUsername"", phone as ""Phone"" FROM USERS WHERE id=@id",
+            @"SELECT id as ""Id"", name as ""Name"", surname as ""Surname"", image_id as ""ImageId"", patronymic as ""Patronymic"", email as ""Email"", role as ""Role"", hashed_password as ""HashedPassword"", telegram_username as ""TelegramUsername"", department_id as ""DepartmentId"",  phone as ""Phone"" FROM USERS WHERE id=@id",
             new
             {
                 id = userId
@@ -63,5 +64,29 @@ public class UsersRepository : IUsersRepository
             new { id = userId });
         
         await _dapperContext.Command(queryObject);
+    }
+
+    public async Task<DbUser> UpdateAsync(DbUser user)
+    {
+        
+        var queryObject = new QueryObject(@"
+            UPDATE users SET name = @Name, surname = @Surname, patronymic = @Patronymic, hashed_password = @HashedPassword, email = @Email, role = @Role, image_id = @ImageId, department_id = @DepartmentId, phone = @Phone, telegram_username = @TelegramUsername WHERE id = @Id
+            RETURNING id as ""Id"", name as ""Name"", surname as ""Surname"", image_id as ""ImageId"", patronymic as ""Patronymic"", email as ""Email"", role as ""Role"", hashed_password as ""HashedPassword"", telegram_username as ""TelegramUsername"", department_id as ""DepartmentId"", phone as ""Phone""",
+            new
+            {
+                Id=user.Id,
+                Name=user.Name,
+                Surname=user.Surname,
+                Patronymic=user.Patronymic,
+                HashedPassword=user.HashedPassword,
+                Email=user.Email,
+                Role=user.Role,
+                ImageId=user.ImageId,
+                DepartmentId=user.DepartmentId,
+                Phone=user.Phone,
+                TelegramUsername=user.TelegramUsername
+            });
+    
+        return await _dapperContext.CommandWithResponse<DbUser>(queryObject);
     }
 }

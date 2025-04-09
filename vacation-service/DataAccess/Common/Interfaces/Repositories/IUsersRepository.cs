@@ -8,4 +8,5 @@ public interface IUsersRepository
     public Task<DbUser?> GetByEmailAsync(string email);
     public Task<DbUser?> GetByIdAsync(Guid userId);
     public Task DeleteAsync(Guid userId);
+    public Task<DbUser> UpdateAsync(DbUser user);
 }

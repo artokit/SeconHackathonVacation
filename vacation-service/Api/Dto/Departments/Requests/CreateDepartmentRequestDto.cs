@@ -11,5 +11,5 @@ public class CreateDepartmentRequestDto
     public string? Description { get; set; }
     
     [Required(ErrorMessage = "Необходимо назначить руководителя отдела.")]
-    public Guid SupervisorId { get; set; }
+    public Guid? SupervisorId { get; set; }
 }

@@ -13,17 +13,17 @@ public static class CompanyMappers
             Id = Guid.NewGuid(),
             Name = requestDto.Name,
             Description = requestDto.Description,
-            Supervisor_Id = requestDto.SupervisorId
         };
     }
 
-    public static DbCompany MapToDb(this UpdateCompanyRequestDto requestDto)
+    public static DbCompany MapToDb(this UpdateCompanyRequestDto requestDto, DbCompany dbCompany)
     {
         return new DbCompany
         {
-            Name = requestDto.Name,
-            Description = requestDto.Description,
-            Supervisor_Id = requestDto.SupervisorId
+            Id = dbCompany.Id,
+            Name = requestDto.Name ?? dbCompany.Name,
+            Description = requestDto.Description ?? dbCompany.Description,
+            DirectorId = dbCompany.DirectorId 
         };
     }
 
@@ -34,7 +34,7 @@ public static class CompanyMappers
             Id = dbCompany.Id,
             Name = dbCompany.Name,
             Description = dbCompany.Description,
-            SupervisorId = dbCompany.Supervisor_Id
+            DirectorId = dbCompany.DirectorId
         };
     }
 

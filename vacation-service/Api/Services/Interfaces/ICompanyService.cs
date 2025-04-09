@@ -6,9 +6,7 @@ namespace Api.Services.Interfaces;
 
 public interface ICompanyService
 {
-    Task<bool> CreateCompanyAsync(CreateCompanyRequestDto dto);
-    Task<GetCompanyResponseDto?> GetCompanyByIdAsync(Guid id);
-    Task<GetCompanyResponseDto?> UpdateCompanyAsync(Guid id, UpdateCompanyRequestDto dto);
-    Task<bool> DeleteCompanyAsync(Guid id);
-
+    Task<GetCompanyResponseDto> CreateCompanyAsync(Guid userId, CreateCompanyRequestDto dto);
+    Task<GetCompanyResponseDto> GetCompanyByUserIdAsync(Guid userId);
+    Task<GetCompanyResponseDto> UpdateCompanyAsync(Guid userId, Guid id, UpdateCompanyRequestDto dto);
 }

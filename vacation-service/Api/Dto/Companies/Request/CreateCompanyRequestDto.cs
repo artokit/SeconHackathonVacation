@@ -10,8 +10,8 @@ namespace Api.Dto.Companies.Request
 
         public string? Description { get; set; }
 
-        [Required(ErrorMessage = "Необходимо назначить руководителя компании.")]
-        public Guid SupervisorId { get; set; }
+        // [Required(ErrorMessage = "Необходимо назначить руководителя компании.")]
+        // public Guid DirectorId { get; set; }
     }
 }
 
