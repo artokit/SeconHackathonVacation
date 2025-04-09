@@ -1,4 +1,5 @@
 using Api.Dto.Authorization.Requests;
+using Api.Dto.Companies.Responses;
 using Api.Dto.Users.Requests;
 using Api.Dto.Users.Responses;
 using Common;
@@ -23,6 +24,23 @@ public static class UserMappers
     public static GetUserResponseDto MapToDto(this DbUser dbUser)
     {
         return new GetUserResponseDto
+        {
+            Id = dbUser.Id,
+            Name = dbUser.Name,
+            Surname = dbUser.Surname,
+            Patronymic = dbUser.Patronymic,
+            DepartmentId = dbUser.DepartmentId,
+            Phone = dbUser.Phone,
+            TelegramUsername = dbUser.TelegramUsername,
+            Email = dbUser.Email,
+            ImageId = dbUser.ImageId,
+            Role = dbUser.Role
+        };
+    }
+    
+    public static GetMeResponseDto MapToGetMeDto(this DbUser dbUser)
+    {
+        return new GetMeResponseDto
         {
             Id = dbUser.Id,
             Name = dbUser.Name,
@@ -64,7 +82,8 @@ public static class UserMappers
             Phone = user.Phone ?? dbUser.Phone,
             TelegramUsername = user.TelegramUsername ?? dbUser.TelegramUsername,
             DepartmentId = user.DepartmentId ?? dbUser.DepartmentId,
-            Email = dbUser.Email
+            Email = dbUser.Email,
+            Role = dbUser.Role
         };
     }
 }
