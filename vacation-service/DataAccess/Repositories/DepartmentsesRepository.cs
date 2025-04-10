@@ -27,8 +27,8 @@ public class DepartmentsesRepository : IDepartmentsRepository
     {
         var queryObject = new QueryObject(
             @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId"" FROM departments
-                WHERE company_id = @companyId",
-            new{ companyId });
+                WHERE company_id = @companyid",
+            new{companyId});
         return await _dapperContext.ListOrEmpty<DbDepartment>(queryObject);
     }
 
@@ -47,7 +47,7 @@ public class DepartmentsesRepository : IDepartmentsRepository
     {
         var queryObject = new QueryObject(
             @"INSERT INTO departments (name, description, supervisor_id, company_id) VALUES (@Name, @Description, @SupervisorId, @CompanyId)
-                RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId""",
+                RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId""",
             new
             {
                 department.Id,

@@ -40,7 +40,8 @@ public static class DepartmentMappers
             Id = dbDepartment.Id,
             Name = dbDepartment.Name,
             Description = dbDepartment.Description,
-            SupervisorId = dbDepartment.SupervisorId
+            SupervisorId = dbDepartment.SupervisorId,
+            CompanyId = dbDepartment.CompanyId
         };
     }
 }
