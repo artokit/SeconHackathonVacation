@@ -70,7 +70,16 @@ services:
     restart: always
     networks:
       - backend
-  
+
+  file-service:
+    build:
+      context: ./file-service
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    ports:
+      - "3000"
+    restart: always
     
 volumes:
   pgdata:
