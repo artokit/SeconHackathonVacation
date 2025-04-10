@@ -22,9 +22,40 @@ public class DepartmentService : IDepartmentService
     public async Task<GetDepartmentResponseDto> CreateAsync(Guid userId, CreateDepartmentRequestDto registerRequestDto)
     {
         var dbDepartment = registerRequestDto.MapToDb();
-        dbDepartment.CompanyId = await _departmentsRepository.GetCompanyIdByUserId(userId);
 
+        var supervisorTask = _usersRepository.GetByIdAsync(registerRequestDto.SupervisorId);
+        var userTask = _usersRepository.GetByIdAsync(userId);
+
+        await Task.WhenAll(supervisorTask, userTask);
+
+        var user = userTask.Result;
+        var supervisor = supervisorTask.Result;
+
+        var userDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)user.DepartmentId);
+        var supervisorDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)supervisor.DepartmentId);
+
+        await Task.WhenAll(userDepartmentTask, supervisorDepartmentTask);
+        
+        var userDepartment = userDepartmentTask.Result;
+        var supervisorDepartment = supervisorDepartmentTask.Result;
+
+        if (userDepartment is null || supervisorDepartment is null)
+        {
+            throw new DepartmentNotFoundRequest();
+        }
+        
+        if (userDepartment.CompanyId != supervisorDepartment.CompanyId)
+        {
+            throw new UserNotFoundRequest();
+        }
+
+        dbDepartment.CompanyId = userDepartment.CompanyId;
+        
         var res = await _departmentsRepository.CreateDepartmentAsync(dbDepartment);
+        
+        supervisor.DepartmentId = res.Id;
+        await _usersRepository.UpdateAsync(supervisor);
+        
         return res.MapToDto();
 
     }
@@ -43,8 +74,26 @@ public class DepartmentService : IDepartmentService
 
     public async Task<List<GetDepartmentResponseDto>> GetAllAsync(Guid userId)
     {
-        var companyId = await _departmentsRepository.GetCompanyIdByUserId(userId);
-        var res = await _departmentsRepository.GetAllDepartments(companyId);
+        var user = await _usersRepository.GetByIdAsync(userId);
+
+        if (user is null)
+        {
+            throw new UserNotFoundRequest();
+        }
+
+        if (user.DepartmentId is null)
+        {
+            throw new UserNotFoundRequest();
+        }
+        
+        var department = await _departmentsRepository.GetDepartmentByIdAsync((Guid)user.DepartmentId);
+
+        if (department is null)
+        {
+            throw new DepartmentNotFoundRequest();
+        }
+        
+        var res = await _departmentsRepository.GetAllDepartmentsByCompanyIdAsync(department.CompanyId);
 
 
         return res.MapToDto();

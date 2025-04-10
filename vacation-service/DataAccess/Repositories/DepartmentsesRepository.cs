@@ -23,31 +23,21 @@ public class DepartmentsesRepository : IDepartmentsRepository
         return await _dapperContext.FirstOrDefault<DbDepartment>(queryObject);
     }
 
-    public async Task<List<DbDepartment>> GetAllDepartments(Guid companyId)
+    public async Task<List<DbDepartment>> GetAllDepartmentsByCompanyIdAsync(Guid companyId)
     {
         var queryObject = new QueryObject(
             @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId"" FROM departments
                 WHERE company_id = @companyId",
             new{ companyId });
-        return await _dapperContext.ListOrEmpty<DbDepartment>(queryObject);
-    }
-
-    public async Task<Guid> GetCompanyIdByUserId(Guid userId)
-    {
-        var queryObject = new QueryObject(
-            @"SELECT d.company_id as ""CompanyId"" FROM departments d
-                JOIN users u ON u.department_id = d.id
-                WHERE u.id = @userId",
-            new { userId });
         
-        return await _dapperContext.FirstOrDefault<Guid>(queryObject);
+        return await _dapperContext.ListOrEmpty<DbDepartment>(queryObject);
     }
 
     public async Task<DbDepartment> CreateDepartmentAsync(DbDepartment department)
     {
         var queryObject = new QueryObject(
             @"INSERT INTO departments (name, description, supervisor_id, company_id) VALUES (@Name, @Description, @SupervisorId, @CompanyId)
-                RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId""",
+                RETURNING id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId""",
             new
             {
                 department.Id,
