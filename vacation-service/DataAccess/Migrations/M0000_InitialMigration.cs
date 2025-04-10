@@ -26,7 +26,8 @@ public class M0000_InitialMigration : Migration
             .WithColumn("name").AsString().NotNullable()
             .WithColumn("description").AsString().Nullable()
             .WithColumn("supervisor_id").AsGuid().NotNullable()
-            .WithColumn("company_id").AsGuid().NotNullable();
+            .WithColumn("company_id").AsGuid().NotNullable()
+            .WithColumn("image_id").AsGuid().Nullable();
 
         Create.Table("companies")
             .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid()"))
