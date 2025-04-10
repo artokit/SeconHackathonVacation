@@ -23,7 +23,8 @@ public static class DepartmentMappers
         {
             Name = requestDto.Name,
             Description = requestDto.Description,
-            SupervisorId = requestDto.SupervisorId
+            SupervisorId = requestDto.SupervisorId,
+            ImageId = requestDto.ImageId
         };
     }
 
@@ -41,7 +42,8 @@ public static class DepartmentMappers
             Name = dbDepartment.Name,
             Description = dbDepartment.Description,
             SupervisorId = dbDepartment.SupervisorId,
-            CompanyId = dbDepartment.CompanyId
+            CompanyId = dbDepartment.CompanyId,
+            ImageId = dbDepartment.ImageId
         };
     }
 }
