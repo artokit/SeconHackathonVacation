@@ -121,7 +121,7 @@ public class DepartmentService : IDepartmentService
         
         if (updateDepartmentRequestDto.ImageId is not null)
         {
-            var image = await _fileServiceClient.GetImageById((Guid)updateDepartmentRequestDto.ImageId);
+            var image = await _fileServiceClient.GetImageByIdAsync((Guid)updateDepartmentRequestDto.ImageId);
             
             if (image is null)
             {

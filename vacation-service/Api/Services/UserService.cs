@@ -2,6 +2,7 @@ using Api.Dto.Users.Requests;
 using Api.Dto.Users.Responses;
 using Api.Exceptions.Companies;
 using Api.Exceptions.Departments;
+using Api.Exceptions.Images;
 using Api.Exceptions.Users;
 using Api.Mappers;
 using Api.Services.Interfaces;
@@ -216,11 +217,11 @@ public class UserService : IUserService
 
         if (request.ImageId is not null)
         {
-            var image = await _fileServiceClient.GetImageById((Guid)request.ImageId);
+            var image = await _fileServiceClient.GetImageByIdAsync((Guid)request.ImageId);
             
             if (image is null)
             {
-                throw new FileNotFoundException();
+                throw new ImageNotFoundException();
             }
         }
         
