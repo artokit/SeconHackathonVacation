@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         ENV_FILE = credentials('notification-service-env')
-        FILE_SERVICE_ENV_FILE = credentials('file-service-env')
+        FILE_SERVICE_ENV_FILE = credentials('FILE_SERVICE_ENV_FILE')
     }
     stages {
         stage('Checkout') {
