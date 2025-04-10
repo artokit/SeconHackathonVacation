@@ -11,4 +11,5 @@ public class UpdateDepartmentRequestDto
     
     [Required(ErrorMessage = "Необходимо назначить руководителя отдела.")]
     public Guid SupervisorId { get; set; }
+    public Guid? ImageId { get; set; }
 }

@@ -4,6 +4,7 @@ using Api.Exceptions.Departments;
 using Api.Exceptions.Users;
 using Api.Mappers;
 using Api.Services.Interfaces;
+using Application.Common.Interfaces;
 using DataAccess.Common.Interfaces.Repositories;
 
 namespace Api.Services;
@@ -12,17 +13,24 @@ public class DepartmentService : IDepartmentService
 {
     private IDepartmentsRepository _departmentsRepository;
     private IUsersRepository _usersRepository;
+    private IFileServiceClient _fileServiceClient;
 
-    public DepartmentService(IDepartmentsRepository departmentsRepository, IUsersRepository usersRepository)
+    public DepartmentService(IDepartmentsRepository departmentsRepository, IUsersRepository usersRepository, IFileServiceClient fileServiceClient)
     {
         _departmentsRepository = departmentsRepository;
         _usersRepository = usersRepository;
+        _fileServiceClient = fileServiceClient;
     }
 
     public async Task<GetDepartmentResponseDto> CreateAsync(Guid userId, CreateDepartmentRequestDto registerRequestDto)
     {
         var dbDepartment = registerRequestDto.MapToDb();
-
+        
+        if (await _usersRepository.GetByIdAsync(registerRequestDto.SupervisorId) is null)
+        {
+            throw new SupervisorNotFoundRequest();
+        }
+        
         var supervisorTask = _usersRepository.GetByIdAsync(registerRequestDto.SupervisorId);
         var userTask = _usersRepository.GetByIdAsync(userId);
 
@@ -109,6 +117,16 @@ public class DepartmentService : IDepartmentService
         if (await _usersRepository.GetByIdAsync(updateDepartmentRequestDto.SupervisorId) is null)
         {
             throw new SupervisorNotFoundRequest();
+        }
+        
+        if (updateDepartmentRequestDto.ImageId is not null)
+        {
+            var image = await _fileServiceClient.GetImageById((Guid)updateDepartmentRequestDto.ImageId);
+            
+            if (image is null)
+            {
+                throw new FileNotFoundException();
+            }
         }
         
         var dbDepartment = updateDepartmentRequestDto.MapToDb();
