@@ -166,6 +166,11 @@ public class UserService : IUserService
         {
             throw new UserNotFoundRequest();
         }
+
+        if (user.Role is not Roles.Director && user.Role is not Roles.Hr && user.Id != request.UserId)
+        {
+            throw new CantEditUserException();
+        }
         
         var currentDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)userToUpdate.DepartmentId!);
         var userDepartmentTask = _departmentsRepository.GetDepartmentByIdAsync((Guid)user.DepartmentId!);

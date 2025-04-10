@@ -1,6 +1,6 @@
 using Api.Exceptions.Abstractions;
 
-namespace Api.Exceptions.Users;
+namespace Api.Exceptions.Departments;
 
 public class CantEditDepartmentException : ForbiddenRequestException
 {
