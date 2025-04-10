@@ -23,13 +23,25 @@ public class DepartmentsesRepository : IDepartmentsRepository
         return await _dapperContext.FirstOrDefault<DbDepartment>(queryObject);
     }
 
-    public async Task<List<DbDepartment>> GetAllDepartments()
+    public async Task<List<DbDepartment>> GetAllDepartments(Guid companyId)
     {
         var queryObject = new QueryObject(
-            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"" FROM departments");
+            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId"" FROM departments
+                WHERE company_id = @companyId",
+            new{ companyId });
         return await _dapperContext.ListOrEmpty<DbDepartment>(queryObject);
     }
 
+    public async Task<Guid> GetCompanyIdByUserId(Guid userId)
+    {
+        var queryObject = new QueryObject(
+            @"SELECT d.company_id as ""CompanyId"" FROM departments d
+                JOIN users u ON u.department_id = d.id
+                WHERE u.id = @userId",
+            new { userId });
+        
+        return await _dapperContext.FirstOrDefault<Guid>(queryObject);
+    }
 
     public async Task<DbDepartment> CreateDepartmentAsync(DbDepartment department)
     {

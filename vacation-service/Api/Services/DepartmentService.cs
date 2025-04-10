@@ -22,6 +22,7 @@ public class DepartmentService : IDepartmentService
     public async Task<GetDepartmentResponseDto> CreateAsync(Guid userId, CreateDepartmentRequestDto registerRequestDto)
     {
         var dbDepartment = registerRequestDto.MapToDb();
+        dbDepartment.CompanyId = await _departmentsRepository.GetCompanyIdByUserId(userId);
 
         var res = await _departmentsRepository.CreateDepartmentAsync(dbDepartment);
         return res.MapToDto();
@@ -42,12 +43,9 @@ public class DepartmentService : IDepartmentService
 
     public async Task<List<GetDepartmentResponseDto>> GetAllAsync(Guid userId)
     {
-        var res = await _departmentsRepository.GetAllDepartments();
+        var companyId = await _departmentsRepository.GetCompanyIdByUserId(userId);
+        var res = await _departmentsRepository.GetAllDepartments(companyId);
 
-        if (res.Any())
-        {
-            throw new CompanyIsNotExistDepartments();
-        }
 
         return res.MapToDto();
     }
