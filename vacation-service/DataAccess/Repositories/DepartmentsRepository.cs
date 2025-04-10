@@ -5,11 +5,11 @@ using DataAccess.Models;
 
 namespace DataAccess.Repositories;
 
-public class DepartmentsesRepository : IDepartmentsRepository
+public class DepartmentsRepository : IDepartmentsRepository
 {
     private IDapperContext _dapperContext;
 
-    public DepartmentsesRepository(IDapperContext dapperContext)
+    public DepartmentsRepository(IDapperContext dapperContext)
     {
         _dapperContext = dapperContext;
     } 

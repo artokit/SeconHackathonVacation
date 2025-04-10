@@ -5,11 +5,11 @@ using DataAccess.Dapper;
 
 namespace DataAccess.Repositories
 {
-    public class CompaniesesRepository : ICompaniesRepository
+    public class CompaniesRepository : ICompaniesRepository
     {
         private readonly IDapperContext _dapperContext;
 
-        public CompaniesesRepository(IDapperContext dapperContext)
+        public CompaniesRepository(IDapperContext dapperContext)
         {
             _dapperContext = dapperContext;
         }
