@@ -5,11 +5,11 @@ using DataAccess.Models;
 
 namespace DataAccess.Repositories;
 
-public class DepartmentsesRepository : IDepartmentsRepository
+public class DepartmentsRepository : IDepartmentsRepository
 {
     private IDapperContext _dapperContext;
 
-    public DepartmentsesRepository(IDapperContext dapperContext)
+    public DepartmentsRepository(IDapperContext dapperContext)
     {
         _dapperContext = dapperContext;
     } 
@@ -23,24 +23,14 @@ public class DepartmentsesRepository : IDepartmentsRepository
         return await _dapperContext.FirstOrDefault<DbDepartment>(queryObject);
     }
 
-    public async Task<List<DbDepartment>> GetAllDepartments(Guid companyId)
+    public async Task<List<DbDepartment>> GetAllDepartmentsByCompanyIdAsync(Guid companyId)
     {
         var queryObject = new QueryObject(
             @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId"" FROM departments
-                WHERE company_id = @companyid",
-            new{companyId});
-        return await _dapperContext.ListOrEmpty<DbDepartment>(queryObject);
-    }
-
-    public async Task<Guid> GetCompanyIdByUserId(Guid userId)
-    {
-        var queryObject = new QueryObject(
-            @"SELECT d.company_id as ""CompanyId"" FROM departments d
-                JOIN users u ON u.department_id = d.id
-                WHERE u.id = @userId",
-            new { userId });
+                WHERE company_id = @companyId",
+            new{ companyId });
         
-        return await _dapperContext.FirstOrDefault<Guid>(queryObject);
+        return await _dapperContext.ListOrEmpty<DbDepartment>(queryObject);
     }
 
     public async Task<DbDepartment> CreateDepartmentAsync(DbDepartment department)
