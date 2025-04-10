@@ -42,7 +42,10 @@ class FileService:
         file = await self.repo.get_file_by_id(file_id)
         if file is None:
             raise HTTPException(status_code=404)
-
+        print(file)
+        print(file.extension)
+        print(file.id)
+        print(file.name)
         file_name_in_storage = f"{file_id}.{file.extension}" if file.extension else file_id
         return FileResponse(
             id=file.id,

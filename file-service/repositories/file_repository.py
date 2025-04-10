@@ -22,4 +22,6 @@ class FileRepository:
                 File.id == file_id
             ))
             await session.commit()
-        return file.one_or_none()
+        res = file.one_or_none()
+
+        return res[0] if res else None
