@@ -22,7 +22,12 @@ public class DepartmentService : IDepartmentService
     public async Task<GetDepartmentResponseDto> CreateAsync(Guid userId, CreateDepartmentRequestDto registerRequestDto)
     {
         var dbDepartment = registerRequestDto.MapToDb();
-
+        
+        if (await _usersRepository.GetByIdAsync(registerRequestDto.SupervisorId) is null)
+        {
+            throw new SupervisorNotFoundRequest();
+        }
+        
         var supervisorTask = _usersRepository.GetByIdAsync(registerRequestDto.SupervisorId);
         var userTask = _usersRepository.GetByIdAsync(userId);
 
