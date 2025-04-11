@@ -1,6 +1,5 @@
 ﻿using Api.Dto.Departments.Requests;
 using Api.Dto.Departments.Responses;
-using Api.Dto.Users.Responses;
 using DataAccess.Models;
 
 namespace Api.Mappers;
@@ -17,14 +16,14 @@ public static class DepartmentMappers
         };
     }
     
-    public static DbDepartment MapToDb(this UpdateDepartmentRequestDto requestDto)
+    public static DbDepartment MapToDb(this UpdateDepartmentRequestDto requestDto, string? imageName)
     {
         return new DbDepartment
         {
             Name = requestDto.Name,
             Description = requestDto.Description,
             SupervisorId = requestDto.SupervisorId,
-            ImageId = requestDto.ImageId
+            // ImageName = requestDto.ImageName
         };
     }
 
@@ -43,7 +42,7 @@ public static class DepartmentMappers
             Description = dbDepartment.Description,
             SupervisorId = dbDepartment.SupervisorId,
             CompanyId = dbDepartment.CompanyId,
-            ImageId = dbDepartment.ImageId
+            ImageName = dbDepartment.ImageName
         };
     }
 }

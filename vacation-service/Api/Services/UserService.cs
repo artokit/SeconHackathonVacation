@@ -7,6 +7,7 @@ using Api.Exceptions.Users;
 using Api.Mappers;
 using Api.Services.Interfaces;
 using Application.Common.Interfaces;
+using Application.FileService.Models;
 using Application.NotificationService.Models;
 using Common;
 using DataAccess.Common.Interfaces.Repositories;
@@ -215,9 +216,12 @@ public class UserService : IUserService
             }
         }
 
+        
+        Image? image = null;
+        
         if (request.ImageId is not null)
         {
-            var image = await _fileServiceClient.GetImageByIdAsync((Guid)request.ImageId);
+            image = await _fileServiceClient.GetImageByIdAsync((Guid)request.ImageId);
             
             if (image is null)
             {
@@ -225,14 +229,9 @@ public class UserService : IUserService
             }
         }
         
-        var dbUserToUpdate = request.MapToDb(userToUpdate);
+        var dbUserToUpdate = request.MapToDb(userToUpdate, image?.Name);
         var updatedUser = await _usersRepository.UpdateAsync(dbUserToUpdate);
         
         return updatedUser.MapToDto();
-    }
-
-    public Task<List<GetUserResponseDto>> GetByDepartmentIdAsync(Guid departmentId)
-    {
-        throw new NotImplementedException();
     }
 }

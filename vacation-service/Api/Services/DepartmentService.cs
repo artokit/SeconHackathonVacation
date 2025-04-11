@@ -5,6 +5,7 @@ using Api.Exceptions.Users;
 using Api.Mappers;
 using Api.Services.Interfaces;
 using Application.Common.Interfaces;
+using Application.FileService.Models;
 using DataAccess.Common.Interfaces.Repositories;
 
 namespace Api.Services;
@@ -119,9 +120,10 @@ public class DepartmentService : IDepartmentService
             throw new SupervisorNotFoundRequest();
         }
         
+        Image? image = null;
         if (updateDepartmentRequestDto.ImageId is not null)
         {
-            var image = await _fileServiceClient.GetImageByIdAsync((Guid)updateDepartmentRequestDto.ImageId);
+            image = await _fileServiceClient.GetImageByIdAsync((Guid)updateDepartmentRequestDto.ImageId);
             
             if (image is null)
             {
@@ -129,7 +131,7 @@ public class DepartmentService : IDepartmentService
             }
         }
         
-        var dbDepartment = updateDepartmentRequestDto.MapToDb();
+        var dbDepartment = updateDepartmentRequestDto.MapToDb(image?.Name);
 
         var res = await _departmentsRepository.UpdateDepartmentAsync(id, dbDepartment);
         return res.MapToDto();
