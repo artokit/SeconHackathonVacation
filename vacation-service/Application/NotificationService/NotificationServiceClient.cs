@@ -23,7 +23,7 @@ public class NotificationServiceClient : INotificationServiceClient
             {"to_email", generatedPassword.ToEmail},
             {"password", generatedPassword.Password}
         };
-        Console.WriteLine(_baseUrl);
+
         await _httpClient.PostAsJsonAsync($"{_baseUrl}/generated-password", data);
     }
 }

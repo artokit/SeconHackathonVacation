@@ -9,4 +9,5 @@ public interface IUsersRepository
     public Task<DbUser?> GetByIdAsync(Guid userId);
     public Task DeleteAsync(Guid userId);
     public Task<DbUser> UpdateAsync(DbUser user);
+    public Task<List<DbUser>> GetUsersByDepartmentIdAsync(Guid departmentId);
 }

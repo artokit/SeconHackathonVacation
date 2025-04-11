@@ -45,4 +45,19 @@ public static class DepartmentMappers
             ImageName = dbDepartment.ImageName
         };
     }
+
+    public static GetDepartmentFullInfoResponseDto MapToFullInfoDto(this DbDepartment dbDepartment,
+        List<DbUser> departmentUsers)
+    {
+        return new GetDepartmentFullInfoResponseDto
+        {
+            Id = dbDepartment.Id,
+            Name = dbDepartment.Name,
+            Description = dbDepartment.Description,
+            SupervisorId = dbDepartment.SupervisorId,
+            CompanyId = dbDepartment.CompanyId,
+            ImageName = dbDepartment.ImageName,
+            Employees = departmentUsers.Select(u => u.MapToDto()).ToList()
+        };
+    }
 }

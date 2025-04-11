@@ -69,16 +69,18 @@ public class DepartmentService : IDepartmentService
 
     }
 
-    public async Task<GetDepartmentResponseDto> GetByIdAsync(Guid userId, Guid id)
+    public async Task<GetDepartmentFullInfoResponseDto> GetByIdAsync(Guid userId, Guid id)
     {
         var res = await _departmentsRepository.GetDepartmentByIdAsync(id);
-        
+
         if (res is null)
         {
             throw new DepartmentNotFoundRequest();
         }
+
+        var departmentUsers = await _usersRepository.GetUsersByDepartmentIdAsync(res.Id);
         
-        return res.MapToDto();
+        return res.MapToFullInfoDto(departmentUsers);
     }
 
     public async Task<List<GetDepartmentResponseDto>> GetAllAsync(Guid userId)

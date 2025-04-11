@@ -89,4 +89,16 @@ public class UsersRepository : IUsersRepository
     
         return await _dapperContext.CommandWithResponse<DbUser>(queryObject);
     }
+
+    public async Task<List<DbUser>> GetUsersByDepartmentIdAsync(Guid departmentId)
+    {
+        var queryObject = new QueryObject(
+            @"SELECT id as ""Id"", name as ""Name"", surname as ""Surname"", image_name as ""ImageName"", patronymic as ""Patronymic"", email as ""Email"", role as ""Role"", hashed_password as ""HashedPassword"", telegram_username as ""TelegramUsername"", department_id as ""DepartmentId"",  phone as ""Phone"" FROM USERS WHERE department_id=@DepartmentId",
+            new
+            {
+                DepartmentId = departmentId
+            });
+
+        return await _dapperContext.ListOrEmpty<DbUser>(queryObject);
+    }
 }

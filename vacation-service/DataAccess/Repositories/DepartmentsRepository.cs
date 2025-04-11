@@ -26,7 +26,7 @@ public class DepartmentsRepository : IDepartmentsRepository
     public async Task<List<DbDepartment>> GetAllDepartmentsByCompanyIdAsync(Guid companyId)
     {
         var queryObject = new QueryObject(
-            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId"", image_name as ""ImageName"", FROM departments
+            @"SELECT id as ""Id"", name as ""Name"", description as ""Description"", supervisor_id as ""SupervisorId"", company_id as ""CompanyId"", image_name as ""ImageName"" FROM departments
                 WHERE company_id = @companyId",
             new{ companyId });
         
