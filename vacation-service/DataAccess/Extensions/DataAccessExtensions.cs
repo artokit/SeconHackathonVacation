@@ -21,6 +21,8 @@ public static class DataAccessExtensions
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
         services.AddScoped<ICompaniesRepository, CompaniesRepository>();
+        services.AddScoped<ISchemasRepository, SchemasRepository>();
+        services.AddScoped<IStepsRepository, StepsRepository>();
         return services;
     }
     
