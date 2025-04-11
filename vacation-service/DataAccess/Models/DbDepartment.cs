@@ -7,5 +7,5 @@ public class DbDepartment
     public string? Description { get; set; }
     public Guid SupervisorId { get; set; }
     public Guid CompanyId { get; set; }
-    public Guid? ImageId { get; set; }
+    public string? ImageName { get; set; }
 }

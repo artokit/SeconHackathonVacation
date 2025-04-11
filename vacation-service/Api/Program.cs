@@ -1,6 +1,8 @@
 using Api.Extensions;
+using Api.Mappers;
 using Api.Middlewares;
 using Application.Extensions;
+using Application.Settings;
 using Common;
 using DataAccess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,6 +29,12 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+var applicationService = builder.Configuration.GetSection("Services");
+builder.Services.Configure<ApplicationSettings>(applicationService);
+
+UserMappers.Initilize(applicationService.Get<ApplicationSettings>());
+
 var authOptions = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

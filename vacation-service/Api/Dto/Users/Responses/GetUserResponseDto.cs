@@ -13,5 +13,5 @@ public class GetUserResponseDto
     public Roles Role { get; set; }
     public string? Phone { get; set; }
     public string? TelegramUsername { get; set; }
-    public Guid? ImageId { get; set; }
+    public string? ImageUrl { get; set; }
 }

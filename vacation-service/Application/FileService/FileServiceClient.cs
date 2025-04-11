@@ -19,7 +19,7 @@ public class FileServiceClient : IFileServiceClient
 
     public async Task<Image?> GetImageByIdAsync(Guid id)
     {
-        var res = await _httpClient.GetAsync($"{_baseUrl}/{id}");
+        var res = await _httpClient.GetAsync($"{_baseUrl}/file/{id}");
         
         if (res.StatusCode != HttpStatusCode.OK)
         {
@@ -28,7 +28,6 @@ public class FileServiceClient : IFileServiceClient
 
         var content = await res.Content.ReadAsStringAsync();
         var image = JsonSerializer.Deserialize<Image>(content);
-        Console.WriteLine(image.Id);
         return image;
     }
 }

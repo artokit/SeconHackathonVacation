@@ -5,6 +5,7 @@ using Api.Exceptions.Users;
 using Api.Mappers;
 using Api.Services.Interfaces;
 using Application.Common.Interfaces;
+using Application.FileService.Models;
 using DataAccess.Common.Interfaces.Repositories;
 
 namespace Api.Services;
@@ -68,16 +69,18 @@ public class DepartmentService : IDepartmentService
 
     }
 
-    public async Task<GetDepartmentResponseDto> GetByIdAsync(Guid userId, Guid id)
+    public async Task<GetDepartmentFullInfoResponseDto> GetByIdAsync(Guid userId, Guid id)
     {
         var res = await _departmentsRepository.GetDepartmentByIdAsync(id);
-        
+
         if (res is null)
         {
             throw new DepartmentNotFoundRequest();
         }
+
+        var departmentUsers = await _usersRepository.GetUsersByDepartmentIdAsync(res.Id);
         
-        return res.MapToDto();
+        return res.MapToFullInfoDto(departmentUsers);
     }
 
     public async Task<List<GetDepartmentResponseDto>> GetAllAsync(Guid userId)
@@ -119,9 +122,10 @@ public class DepartmentService : IDepartmentService
             throw new SupervisorNotFoundRequest();
         }
         
+        Image? image = null;
         if (updateDepartmentRequestDto.ImageId is not null)
         {
-            var image = await _fileServiceClient.GetImageByIdAsync((Guid)updateDepartmentRequestDto.ImageId);
+            image = await _fileServiceClient.GetImageByIdAsync((Guid)updateDepartmentRequestDto.ImageId);
             
             if (image is null)
             {
@@ -129,7 +133,7 @@ public class DepartmentService : IDepartmentService
             }
         }
         
-        var dbDepartment = updateDepartmentRequestDto.MapToDb();
+        var dbDepartment = updateDepartmentRequestDto.MapToDb(image?.Name);
 
         var res = await _departmentsRepository.UpdateDepartmentAsync(id, dbDepartment);
         return res.MapToDto();

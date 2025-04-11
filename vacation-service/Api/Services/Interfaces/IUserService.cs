@@ -9,5 +9,4 @@ public interface IUserService
     public Task<GetUserResponseDto> CreateAsync(Guid userId, CreateUserRequestDto request);
     public Task DeleteAsync(Guid userId, Guid employeeId);
     public Task<GetUserResponseDto> UpdateAsync(Guid userId, UpdateUserRequestDto request);
-    public Task<List<GetUserResponseDto>> GetByDepartmentIdAsync(Guid departmentId);
 }
