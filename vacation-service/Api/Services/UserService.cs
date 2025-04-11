@@ -32,7 +32,7 @@ public class UserService : IUserService
         _rightService = rightService;
     }
 
-    public async Task<GetMeResponseDto> GetMe(Guid userId)
+    public async Task<GetUserResponseDto> GetMe(Guid userId)
     {
         var res = await _usersRepository.GetByIdAsync(userId) ?? throw new UserNotFoundRequest();
         return res.MapToGetMeDto();
