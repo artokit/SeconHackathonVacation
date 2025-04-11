@@ -28,12 +28,6 @@ public class M0000_InitialMigration : Migration
             .WithColumn("supervisor_id").AsGuid().NotNullable()
             .WithColumn("company_id").AsGuid().NotNullable()
             .WithColumn("image_name").AsString().Nullable();
-
-        Create.Table("companies")
-            .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid()"))
-            .WithColumn("name").AsString().NotNullable()
-            .WithColumn("description").AsString().Nullable()
-            .WithColumn("director_id").AsGuid().NotNullable();
         
         Create.Table("schemas")
             .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(RawSql.Insert("gen_random_uuid()"))
@@ -50,7 +44,6 @@ public class M0000_InitialMigration : Migration
     {
         Delete.Table("users");
         Delete.Table("departments");
-        Delete.Table("companies");
         Delete.Table("steps");
         Delete.Table("schemas");
     }

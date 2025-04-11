@@ -45,9 +45,9 @@ public static class UserMappers
         };
     }
     
-    public static GetMeResponseDto MapToGetMeDto(this DbUser dbUser)
+    public static GetUserResponseDto MapToGetMeDto(this DbUser dbUser)
     {
-        return new GetMeResponseDto
+        return new GetUserResponseDto
         {
             Id = dbUser.Id,
             Name = dbUser.Name,
